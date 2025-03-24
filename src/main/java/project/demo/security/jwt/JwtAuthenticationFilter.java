@@ -2,6 +2,7 @@ package project.demo.security.jwt;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,10 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     private final List<String> excludedPaths = Arrays.asList(
-            "/article/list",
             "/login",
-            "/article/*/commentList"
-
+            "/refresh"
             // 다른 허용할 URI 패턴들을 추가
     );
 
@@ -45,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         /// 필터링 없이 바로 접속 허용 ///
         for (String path : excludedPaths) {
             if (antPathMatcher.match(path, uri)) {
+
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -56,12 +56,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-//            try{
-//                username = jwtUtil.extractUsername(jwt);
-//            }catch (ExpiredJwtException e){
-//                request.setAttribute("exception", e.getMessage());
-//            }
+            //username = jwtUtil.extractUsername(jwt);
+
+            try{
+                username = jwtUtil.extractUsername(jwt);
+            }catch (ExpiredJwtException e){
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT token");
+            }catch (MalformedJwtException e){
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Malformed JWT token");
+            }
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.memberService.loadUserByUsername(username);

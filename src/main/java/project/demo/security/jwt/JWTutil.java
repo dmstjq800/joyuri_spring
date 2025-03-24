@@ -20,6 +20,8 @@ public class JWTutil {
     @Value("${jwt.secret}")
     private String secret;
     private long expiration = 1000000;
+    private long RefreshExpiration = 5000000;
+
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -49,6 +51,17 @@ public class JWTutil {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
+    /// 리프레시 토큰
+    public String generateRefreshToken(String jwtToken) {
+        Map<String, Object> claims = new HashMap<>();
+        return createRefreshToken(claims, jwtToken);
+    }
+    private String createRefreshToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + RefreshExpiration))
+                .signWith(SignatureAlgorithm.HS256, secret).compact();
+    }
+    /// 
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);

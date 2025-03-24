@@ -46,11 +46,11 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeHttpRequests((authrize) -> authrize
-                        .requestMatchers("/home").authenticated()
+                       // .requestMatchers("/home").authenticated()
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
-                ).exceptionHandling((exceptionHandling) ->
-                        exceptionHandling.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                //).exceptionHandling((exceptionHandling) ->
+                  //      exceptionHandling.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -58,7 +58,7 @@ public class SecurityConfig {
 
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtExceptionFilter(objectMapper), jwtFilter.getClass());
+        //http.addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class);
         return http.build();
     }
 

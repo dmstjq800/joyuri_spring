@@ -17,15 +17,21 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         String exception = (String)request.getAttribute("exception");
 
+        //response.sendError(HttpStatus.UNAUTHORIZED.value(), exception);
+
+        if(exception == null){
+            //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "is null");
+        }
         //잘못된 타입의 토큰인 경우
-        if(exception.equals("MalformedJwtException")) {
+        else if(exception.equals("MalformedJwtException")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MalformedJwtException");
         }
         //토큰 만료된 경우
         else if(exception.equals("ExpiredJwtException")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "ExpiredJwtException");
         }
+
+
     }
 //        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-
 }

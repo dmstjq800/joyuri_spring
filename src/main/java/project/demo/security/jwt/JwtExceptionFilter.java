@@ -28,6 +28,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             //만료 에러
             request.setAttribute("exception", "ExpiredJwtException");
 
+
         } catch (MalformedJwtException e){
             //변조 에러
             request.setAttribute("exception", "MalformedJwtException");

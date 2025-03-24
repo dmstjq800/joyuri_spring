@@ -30,7 +30,7 @@ public class CommetController {
         String username = memberService.getCurrentUsername();
         String content = articleDTO.getContent();
         if(username == null)  {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("require login");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
         }
 
         Article article = articleService.findById(Long.parseLong(id));
@@ -43,7 +43,7 @@ public class CommetController {
     public ResponseEntity<String> deleteCommnet(@PathVariable String id, String commentId) {
         String username = memberService.getCurrentUsername();
         Article article = articleService.findById(Long.parseLong(id));
-        if(username == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("require login");
+        if(username == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
         if(article == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
 
         return commentService.deleteCommnet(Long.parseLong(commentId), article, username);
