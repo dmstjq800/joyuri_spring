@@ -1,16 +1,20 @@
 package project.demo.album.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.demo.album.entity.Album;
 import project.demo.album.entity.Track;
 import project.demo.article.entity.Comment;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class AlbumDetailDTO {
     private long id;
     private String title;
     private String description;
-    private byte[] image;
+    private String image;
     private List<Track> Tracks;
     public AlbumDetailDTO(Album album) {
         this.id = album.getId();

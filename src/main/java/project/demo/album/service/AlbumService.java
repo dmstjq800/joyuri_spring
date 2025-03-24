@@ -25,7 +25,7 @@ public class AlbumService {
                 .image(albumDTO.getImage())
                 .build();
         albumRepository.save(album);
-        return ResponseEntity.ok(album);
+        return ResponseEntity.ok("Album added");
     }
     /// 앨범 겟
     public ResponseEntity<?> getAlbumDetailById(long id) {

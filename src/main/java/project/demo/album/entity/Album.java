@@ -21,7 +21,7 @@ public class Album {
     private String description;
 
     @Column(length = 100000)
-    private byte[] image;
+    private String image;
 
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)

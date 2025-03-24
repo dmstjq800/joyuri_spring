@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-    public Optional<Album> getAlbumById(Long id);
 }

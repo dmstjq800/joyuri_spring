@@ -12,14 +12,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/album")
-
 public class AlbumController {
     private final AlbumService albumService;
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
     public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO) {
-        if (albumDTO.getTitle() == null) {return ResponseEntity.badRequest().body("Title is required");}
+
+        if (albumDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
         return albumService.addAlbum(albumDTO);
     }
 
@@ -29,8 +29,8 @@ public class AlbumController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAlbum(@PathVariable Long id) {
-        return albumService.getAlbumDetailById(id);
+    public ResponseEntity<?> getAlbum(@PathVariable String id) {
+        return albumService.getAlbumDetailById(Long.parseLong(id));
     }
 
 }
