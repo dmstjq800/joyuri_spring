@@ -22,11 +22,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
     /// 댓글 작성
     @Transactional
-    public ResponseEntity<String> insertComment(Article article, String content, String username) {
+    public ResponseEntity<String> insertComment(Article article, String content, String nickname) {
         Comment comment = Comment.builder()
                 .article(article)
                 .content(content)
-                .author(username)
+                .author(nickname)
                 .build();
         commentRepository.save(comment);
         article.getComment().add(comment);
@@ -34,10 +34,10 @@ public class CommentService {
     }
     /// 댓글 삭제
     @Transactional
-    public ResponseEntity<String> deleteCommnet(long id, Article article, String username) {
+    public ResponseEntity<String> deleteCommnet(long id, Article article, String nickname) {
         Comment comment = commentRepository.findById(id).orElse(null);
         if(comment == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        if(!comment.getAuthor().equals(username)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        if(!comment.getAuthor().equals(nickname)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         commentRepository.delete(comment);
 
         return ResponseEntity.ok("success");

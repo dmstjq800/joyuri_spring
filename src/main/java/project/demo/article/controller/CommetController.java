@@ -27,26 +27,26 @@ public class CommetController {
     /// 댓글 작성
     @PostMapping("/insertComment")
     public ResponseEntity<String> insertComment(@PathVariable String id, @RequestBody ArticleDTO articleDTO) {
-        String username = memberService.getCurrentUsername();
+        String nickname = memberService.getCurrentNickname();
         String content = articleDTO.getContent();
-        if(username == null)  {
+        if(nickname == null)  {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
         }
 
         Article article = articleService.findById(Long.parseLong(id));
         if(article == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
 
-        return commentService.insertComment(article, content, username);
+        return commentService.insertComment(article, content, nickname);
     }
     /// 댓글 삭제
     @PostMapping("/deleteComment")
     public ResponseEntity<String> deleteCommnet(@PathVariable String id, String commentId) {
-        String username = memberService.getCurrentUsername();
+        String nickname = memberService.getCurrentNickname();
         Article article = articleService.findById(Long.parseLong(id));
-        if(username == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
+        if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
         if(article == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
 
-        return commentService.deleteCommnet(Long.parseLong(commentId), article, username);
+        return commentService.deleteCommnet(Long.parseLong(commentId), article, nickname);
     }
 
     /// 댓글 리스트

@@ -27,11 +27,11 @@ public class ArticleController {
     /// 게시글 작성
     @PostMapping("/write")
     public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO) {
-        String username = memberService.getCurrentUsername();
-        if(username == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
+        String nickname = memberService.getCurrentNickname();
+        if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         if(articleDTO.getTitle().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
 
-        return articleService.createArticle(articleDTO.getTitle(), articleDTO.getContent(), username);
+        return articleService.createArticle(articleDTO.getTitle(), articleDTO.getContent(), nickname);
     }
     ///  게시글 조회
     @GetMapping("/{id}")
@@ -43,8 +43,8 @@ public class ArticleController {
     /// 게시글 삭제
     @PostMapping("/delete{id}")
     public ResponseEntity<String> deleteArticle(@PathVariable String id) {
-        String username = memberService.getCurrentUsername();
-        return articleService.deleteArticle(Long.parseLong(id), username);
+        String nickname = memberService.getCurrentNickname();
+        return articleService.deleteArticle(Long.parseLong(id), nickname);
     }
     /// 게시글 리스트
     @GetMapping("/list")
@@ -52,8 +52,4 @@ public class ArticleController {
         return articleService.getArticlelist();
     }
 
-    @PostMapping("/test")
-    public String test(){
-        return memberService.getCurrentUsername();
-    }
 }

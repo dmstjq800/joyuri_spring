@@ -28,6 +28,8 @@ public class Member implements UserDetails {
 
     @Column(unique = true)
     private String username;
+    @Column(unique = true)
+    private String nickname;
 
     private String password;
 
@@ -38,4 +40,6 @@ public class Member implements UserDetails {
 
     @Column(columnDefinition = "TEXT")
     private String RefreshToken;
+
+
 }

@@ -28,21 +28,21 @@ public class ArticleService {
 
     /// 게시글 생성
     @Transactional
-    public ResponseEntity<String> createArticle(String title, String content, String username) {
+    public ResponseEntity<String> createArticle(String title, String content, String nickname) {
         Article article = Article.builder()
                 .title(title)
                 .content(content)
-                .author(username)
+                .author(nickname)
                 .build();
         articleRepository.save(article);
         return ResponseEntity.ok("success");
     }
     /// 게시글 삭제
     @Transactional
-    public ResponseEntity<String> deleteArticle(long id, String username) {
+    public ResponseEntity<String> deleteArticle(long id, String nickname) {
         Article article = articleRepository.findById(id).orElse(null);
         if(article == null) ResponseEntity.noContent().build();
-        if(!article.getAuthor().equals(username)) {return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized");}
+        if(!article.getAuthor().equals(nickname)) {return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized");}
         articleRepository.delete(article);
         return ResponseEntity.ok("success");
     }

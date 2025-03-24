@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 public class AuthResponse {
     private String accessToken;
-
-    public AuthResponse(String jwt) {
+    private String username;
+    public AuthResponse(String jwt, String username) {
         accessToken = jwt;
+        this.username = username;
     }
 }

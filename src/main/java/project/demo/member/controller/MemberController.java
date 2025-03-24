@@ -19,7 +19,8 @@ public class MemberController {
     public ResponseEntity<String> join(@RequestBody MemberDTO memberDTO) {
         String username = memberDTO.getUsername();
         String password = memberDTO.getPassword();
-        return memberService.createMember(username, password);
+        String nickname = memberDTO.getNickname();
+        return memberService.createMember(username, password, nickname);
     }
 
 

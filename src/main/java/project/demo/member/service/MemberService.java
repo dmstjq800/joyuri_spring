@@ -33,7 +33,7 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
     }
 
-    public ResponseEntity<String> createMember(String username, String password){
+    public ResponseEntity<String> createMember(String username, String password, String nickname) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         if(memberRepository.findByUsername(username).isPresent())
@@ -42,12 +42,12 @@ public class MemberService implements UserDetailsService {
         password = passwordEncoder.encode(password);
         Member member = Member.builder()
                 .username(username)
-                .password(password).build();
+                .password(password).nickname(nickname).build();
         memberRepository.save(member);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
-
+    /// 현재 유저 email
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
@@ -56,12 +56,21 @@ public class MemberService implements UserDetailsService {
         }
         return null; // 또는 예외 처리
     }
+    /// 현재 유저 닉네임
+    public String getCurrentNickname() {
+            Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
+            if(member == null) return null;
+            return member.getNickname();
+        }
 
     /// admin 생성 ///
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Member member = Member.builder().username("admin").password(passwordEncoder.encode("admin")).build();
+        Member member = Member.builder().username("admin")
+                .password(passwordEncoder.encode("admin"))
+                .nickname("administrator")
+                .RefreshToken(null).build();
         memberRepository.save(member);
     }
     /// 토큰저장
