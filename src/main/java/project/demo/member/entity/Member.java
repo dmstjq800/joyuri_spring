@@ -36,4 +36,6 @@ public class Member implements UserDetails {
         return null; // 여기서는 간단하게 null 처리. 필요에 따라 권한 설정
     }
 
+    @Column(columnDefinition = "TEXT")
+    private String RefreshToken;
 }

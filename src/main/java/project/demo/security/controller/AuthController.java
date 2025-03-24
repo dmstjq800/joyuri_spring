@@ -2,6 +2,7 @@ package project.demo.security.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,20 +38,24 @@ public class AuthController {
             throw new Exception("로그인 실패", authException);
         }
 
-        final UserDetails userDetails = memberService
-                .loadUserByUsername(memberDTO.getUsername());
 
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = jwtUtil.generateToken(memberDTO);
         ///
         final String refreshToken = jwtUtil.generateRefreshToken(jwt);
+        memberService.saveTocken(memberDTO.getUsername(), refreshToken);
         ///
         return ResponseEntity.ok(new AuthResponse(jwt));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<?> createRefreshToken(@RequestBody MemberDTO memberDTO) throws Exception {
-        
-        return ResponseEntity.ok("a");
+
+        String refreshToken = memberService.getRefreshToken(memberDTO.getUsername());
+        if(refreshToken == null || jwtUtil.isTokenExpired(refreshToken)) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Refresh Token Expired");
+        }
+        String jwt = jwtUtil.generateToken(memberDTO);
+        return ResponseEntity.ok(new AuthResponse(jwt));
     }
 //    BadCredentialsException: 가장 흔한 예외 중 하나로, 제공된 비밀번호가 저장된 비밀번호와 일치하지 않을 때 발생합니다.
 //    DisabledException: 사용자가 비활성화된 상태일 때 발생합니다. 예를 들어, 계정이 잠겼거나 관리자에 의해 비활성화된 경우입니다.

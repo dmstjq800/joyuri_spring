@@ -64,5 +64,17 @@ public class MemberService implements UserDetailsService {
         Member member = Member.builder().username("admin").password(passwordEncoder.encode("admin")).build();
         memberRepository.save(member);
     }
+    /// 토큰저장
+    public void saveTocken(String username, String token) {
+        Member member = memberRepository.findByUsername(username).orElseThrow();
+        if(member.getRefreshToken() == null || member.getRefreshToken().isEmpty()) {
+            member.setRefreshToken(token);
+            memberRepository.save(member);
+        }
+    }
 
+    public String getRefreshToken(String username) {
+        Member member = memberRepository.findByUsername(username).orElse(null);
+        return member.getRefreshToken();
+    }
 }

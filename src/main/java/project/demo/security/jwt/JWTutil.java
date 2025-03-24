@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import project.demo.member.dto.MemberDTO;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -41,9 +42,9 @@ public class JWTutil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(MemberDTO memberDTO) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, memberDTO.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -61,7 +62,7 @@ public class JWTutil {
                 .setExpiration(new Date(System.currentTimeMillis() + RefreshExpiration))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
-    /// 
+    ///
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
