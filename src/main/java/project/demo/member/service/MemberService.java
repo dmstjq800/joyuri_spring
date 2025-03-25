@@ -67,7 +67,7 @@ public class MemberService implements UserDetailsService {
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Member member = Member.builder().username("admin")
+        Member member = Member.builder().username("admin@naver.com")
                 .password(passwordEncoder.encode("admin"))
                 .nickname("administrator")
                 .RefreshToken(null).build();

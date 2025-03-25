@@ -23,6 +23,8 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Lob
     private String content;
     private String author;
 

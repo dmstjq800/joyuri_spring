@@ -1,6 +1,8 @@
 package project.demo.article.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.Comment;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class ArticleDetailDTO {
 
     private Long id;

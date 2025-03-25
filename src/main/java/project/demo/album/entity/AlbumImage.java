@@ -5,26 +5,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
-public class Track {
+@NoArgsConstructor
+@Builder
+public class AlbumImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private String title;
-
-    private String youtubeUrl;
-
-    @Lob
-    private String Description;
+    @Column(nullable = false)
+    private String url;
 
     @ManyToOne
     @JoinColumn(name = "album_id")
     @JsonIgnore
     private Album album;
+
+    public void updateUrl(String url) {
+        this.url = url;
+    }
+
 }

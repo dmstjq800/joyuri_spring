@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.demo.article.dto.ArticleDTO;
 import project.demo.article.dto.ArticleDetailDTO;
 import project.demo.article.dto.ArticleListDTO;
@@ -26,12 +27,13 @@ public class ArticleController {
 
     /// 게시글 작성
     @PostMapping("/write")
-    public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO) {
+    public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO, MultipartFile image) {
         String nickname = memberService.getCurrentNickname();
+
         if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         if(articleDTO.getTitle().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
 
-        return articleService.createArticle(articleDTO.getTitle(), articleDTO.getContent(), nickname);
+        return articleService.createArticle(articleDTO, nickname, image);
     }
     ///  게시글 조회
     @GetMapping("/{id}")

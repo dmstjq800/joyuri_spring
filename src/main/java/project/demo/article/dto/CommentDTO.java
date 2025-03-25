@@ -1,7 +1,9 @@
 package project.demo.article.dto;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import project.demo.article.entity.Comment;
 
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class CommentDTO {
     private Long id;
     private String author;

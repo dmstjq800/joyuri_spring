@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.bind.annotation.GetMapping;
+import project.demo.album.entity.AlbumImage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +29,8 @@ public class Article {
     private Long id;
 
     private String title;
+
+    @Lob
     private String content;
 
     private String author;
@@ -39,6 +41,10 @@ public class Article {
 
     @LastModifiedDate
     private LocalDateTime ModifyDate;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private List<ArticleImage> articleImages = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment = new ArrayList<>();
