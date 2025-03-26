@@ -9,7 +9,7 @@ import project.demo.album.dto.AlbumDTO;
 import project.demo.album.dto.AlbumDetailDTO;
 import project.demo.album.entity.Album;
 import project.demo.album.entity.AlbumImage;
-import project.demo.image.repository.ImageRepository;
+import project.demo.album.repository.AlbumImageRepository;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
 
@@ -21,7 +21,14 @@ import java.util.List;
 public class AlbumService {
     private final AlbumRepository albumRepository;
     private final ImageService imageService;
-    private final ImageRepository imageRepository;
+    private final AlbumImageRepository albumImageRepository;
+
+    public  ResponseEntity<?> deleteAlbum(long id) {
+        Album album = albumRepository.findById(id).orElse(null);
+        if (album == null) return ResponseEntity.notFound().build();
+        albumRepository.delete(album);
+        return ResponseEntity.ok("success");
+    }
 
     /// 앨범 추가
     public ResponseEntity<?> addAlbum(AlbumDTO albumDTO, MultipartFile image) {
@@ -33,7 +40,7 @@ public class AlbumService {
         if(image != null) {
             String url = imageService.ImageUpload(image,"album/");
             AlbumImage albumImage = AlbumImage.builder().url(url).build();
-            imageRepository.save(albumImage);
+            albumImageRepository.save(albumImage);
             album.getAlbumImages().add(albumImage);
         }
 

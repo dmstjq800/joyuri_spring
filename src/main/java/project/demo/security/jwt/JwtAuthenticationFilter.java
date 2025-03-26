@@ -33,7 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     private final List<String> excludedPaths = Arrays.asList(
             "/login",
-            "/refresh"
+            "/refresh",
+            "/member/join"
+
             // 다른 허용할 URI 패턴들을 추가
     );
 

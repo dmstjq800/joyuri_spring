@@ -40,6 +40,10 @@ public class Member implements UserDetails {
 
     private String password;
 
+    private boolean enabled;
+
+    private String emailToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null; // 여기서는 간단하게 null 처리. 필요에 따라 권한 설정

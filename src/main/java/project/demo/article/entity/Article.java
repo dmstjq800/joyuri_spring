@@ -33,6 +33,7 @@ public class Article {
     @Lob
     private String content;
 
+
     private String author;
 
     @CreatedDate

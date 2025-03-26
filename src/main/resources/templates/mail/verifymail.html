@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이메일 인증 요청</title>
+    <style>
+        /* 간단한 스타일링 */
+        body { font-family: 'Arial', sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; }
+        .header { background-color: #f0f0f0; padding: 15px; text-align: center; }
+        .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .footer { margin-top: 30px; text-align: center; color: #777; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>이메일 인증 요청</h1>
+    </div>
+    <p>안녕하세요, <span th:text="${nickname}"></span>님!</p>
+    <p>쪼율링큐에 가입하신 것을 환영합니다.</p>
+    <p>아래 링크를 클릭하여 이메일 인증을 완료해주세요:</p>
+    <p><a th:href="${verificationLink}" class="button">이메일 인증</a></p>
+    <p>만약 위 버튼이 작동하지 않으면, 다음 링크를 복사하여 브라우저에 붙여넣어 주세요:</p>
+    <p><a th:href="${verificationLink}" th:text="${verificationLink}"></a></p>
+    <div class="footer">
+        <p>본 메일은 발신 전용입니다. 회신하지 마십시오.</p>
+    </div>
+</div>
+</body>
+</html>

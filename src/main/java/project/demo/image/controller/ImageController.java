@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.album.entity.Album;
 import project.demo.album.entity.AlbumImage;
-import project.demo.image.repository.ImageRepository;
+import project.demo.album.repository.AlbumImageRepository;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
 
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class ImageController {
     private final ImageService imageService;
     private final AlbumRepository albumRepository;
-    private final ImageRepository imageRepository;
+    private final AlbumImageRepository albumImageRepository;
     @GetMapping("/upload")
     public String fileupload() {
         return "file/fileupload";
@@ -37,7 +37,7 @@ public class ImageController {
         Album album = Album.builder().title("hi").description("hi2").albumImages(new ArrayList<>()).build();
         albumRepository.save(album);
         AlbumImage albumImage = AlbumImage.builder().album(album).url(url).build();
-        imageRepository.save(albumImage);
+        albumImageRepository.save(albumImage);
         album.getAlbumImages().add(albumImage);
 
         return ResponseEntity.status(HttpStatus.OK).body("file successfully uploaded");

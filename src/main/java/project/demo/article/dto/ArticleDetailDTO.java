@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import project.demo.article.entity.Article;
+import project.demo.article.entity.ArticleImage;
 import project.demo.article.entity.Comment;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class ArticleDetailDTO {
     private String content;
     private LocalDateTime CreateDate;
     private LocalDateTime ModifyDate;
-
+    private List<ArticleImage> images;
     private List<Comment> comments;
 
     public ArticleDetailDTO(Article article) {
@@ -34,6 +35,7 @@ public class ArticleDetailDTO {
         this.CreateDate = article.getCreateDate();
         this.ModifyDate = article.getModifyDate();
         this.comments = article.getComment();
+        this.images = article.getArticleImages();
 
     }
 }

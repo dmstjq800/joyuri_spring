@@ -19,9 +19,7 @@ public class HomeContoller {
 
     @GetMapping("/home")
     public ResponseEntity<?> HomeContoller() {
-        MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
-        memberResponseDTO.setUsername(memberService.getCurrentUsername());
-        memberResponseDTO.setNickname(memberService.getCurrentNickname());
+        MemberResponseDTO memberResponseDTO = memberService.getMemberResponseDTO();
         return ResponseEntity.ok(memberResponseDTO);
     }
 }

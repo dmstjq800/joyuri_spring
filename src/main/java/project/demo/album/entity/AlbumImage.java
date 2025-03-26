@@ -4,6 +4,7 @@ package project.demo.album.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import project.demo.image.entity.Image;
 
 @Getter
 @Setter
@@ -11,12 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AlbumImage {
+public class AlbumImage extends Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+
     private String url;
 
     @ManyToOne

@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ArticleListDTO {
     private Long id;
-    private String author;
     private String title;
     private LocalDateTime CreateDate;
     private List<ArticleImage> articleImageList;
@@ -26,7 +25,7 @@ public class ArticleListDTO {
         this.id = article.getId();
         this.title = article.getTitle();
         this.CreateDate = article.getCreateDate();
-        this.author = article.getAuthor();
+
         this.articleImageList = article.getArticleImages();
     }
 }

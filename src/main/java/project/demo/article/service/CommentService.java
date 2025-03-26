@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import project.demo.article.dto.CommentDTO;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.Comment;
+import project.demo.article.repository.ArticleRepository;
 import project.demo.article.repository.CommentRepository;
 import project.demo.security.resultdata.RsData;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final ArticleRepository articleRepository;
     /// 댓글 작성
     @Transactional
     public ResponseEntity<String> insertComment(Article article, String content, String nickname) {
@@ -29,7 +31,8 @@ public class CommentService {
                 .author(nickname)
                 .build();
         commentRepository.save(comment);
-        article.getComment().add(comment);
+        //article.getComment().add(comment);
+
         return ResponseEntity.ok("success");
     }
     /// 댓글 삭제

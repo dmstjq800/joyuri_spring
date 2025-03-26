@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import project.demo.image.repository.ImageRepository;
+import project.demo.album.repository.AlbumImageRepository;
 
 import java.io.File;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImageService {
     private String path;
-    private final ImageRepository imageRepository;
+    private final AlbumImageRepository albumImageRepository;
 
     @Value("${image.upload-dir}")
     String url;
@@ -31,9 +31,9 @@ public class ImageService {
 //            AlbumImage albumImage = AlbumImage.builder().url(newFilename).album(album).build();
 //            imageRepository.save(albumImage);
 //            album.getAlbumImages().add(albumImage);
-            return "images/" + path + newFilename;
+            return "/images/" + path + newFilename;
         }catch (Exception e){
-            return null;
+            return e.getMessage();
         }
     }
 

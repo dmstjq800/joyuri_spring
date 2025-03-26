@@ -1,11 +1,13 @@
 package project.demo.security.controller;
 
 
+import jdk.jfr.Enabled;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,16 +36,18 @@ public class AuthController {
             );
         }catch (UsernameNotFoundException | BadCredentialsException e){
             throw new Exception("사용자 정보 불일치", e);
-        } catch (Exception authException) {
-            throw new Exception("로그인 실패", authException);
+        } catch (DisabledException e) {
+            return ResponseEntity.status(488).build();
+        } catch (Exception e){
+            throw new Exception("로그인 실패", e);
         }
 
 
         final String jwt = jwtUtil.generateToken(memberDTO);
-        ///
+
         final String refreshToken = jwtUtil.generateRefreshToken(jwt);
         memberService.saveTocken(memberDTO.getUsername(), refreshToken);
-        ///
+
         return ResponseEntity.ok(new AuthResponse(jwt, memberDTO.getUsername()));
     }
 

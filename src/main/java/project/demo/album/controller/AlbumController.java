@@ -18,9 +18,10 @@ public class AlbumController {
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
-    public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, MultipartFile image) {
+    public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
 
         if (albumDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
+        //if(image.isEmpty()) image = null;
         return albumService.addAlbum(albumDTO, image);
     }
 
@@ -32,6 +33,11 @@ public class AlbumController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getAlbum(@PathVariable String id) {
         return albumService.getAlbumDetailById(Long.parseLong(id));
+    }
+
+    @PostMapping("/delete{id}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable String id) {
+        return albumService.deleteAlbum(Long.parseLong(id));
     }
 
 }
