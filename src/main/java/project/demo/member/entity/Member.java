@@ -10,8 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.annotation.processing.Generated;
-
 import java.util.Collection;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -51,6 +49,9 @@ public class Member implements UserDetails {
 
     @Column(columnDefinition = "TEXT")
     private String RefreshToken;
+
+
+
 
 
 }

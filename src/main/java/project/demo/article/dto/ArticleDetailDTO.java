@@ -1,5 +1,6 @@
 package project.demo.article.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,12 @@ public class ArticleDetailDTO {
     private String author;
     private String title;
     private String content;
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime CreateDate;
     private LocalDateTime ModifyDate;
     private List<ArticleImage> images;
     private List<Comment> comments;
+    private long likes;
 
     public ArticleDetailDTO(Article article) {
         this.id = article.getId();
@@ -36,6 +39,6 @@ public class ArticleDetailDTO {
         this.ModifyDate = article.getModifyDate();
         this.comments = article.getComment();
         this.images = article.getArticleImages();
-
+        this.likes = article.getLikes();
     }
 }

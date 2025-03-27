@@ -21,7 +21,7 @@ public class TrackService {
         if (album == null) {return ResponseEntity.status(404).body("Album not found");}
         Track track = Track.builder()
                 .title(trackDTO.getTitle())
-                .Description(trackDTO.getDescription())
+                .description(trackDTO.getDescription())
                 .youtubeUrl(trackDTO.getYoutubeUrl())
                 .album(album).build();
         trackRepository.save(track);

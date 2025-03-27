@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,18 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Album {
+    public Album(String albumTitle, LocalDate releaseDate, String description) {
+        this.title = albumTitle;
+        this.releaseDate = releaseDate;
+        this.description = description;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime CreateDate;
+    private LocalDate releaseDate;
 
     @Lob
     private String description;
@@ -33,9 +38,13 @@ public class Album {
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
     private List<AlbumImage> albumImages = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Track> Tracks = new ArrayList<>();
+    private List<Track> tracks = new ArrayList<>();
+
+    public void addTrack(Track track) {
+        this.tracks.add(track);
+        track.setAlbum(this);
+    }
 
 
 }

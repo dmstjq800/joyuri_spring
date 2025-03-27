@@ -47,6 +47,12 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
     }
+    public Member findById(long id){
+        return memberRepository.findById(id).orElse(null);
+    }
+    public Member findByusername(String username){
+        return memberRepository.findByUsername(username).orElse(null);
+    }
     /// 유저 생성
     public ResponseEntity<String> createMember(String username, String password, String nickname) throws MessagingException {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -104,6 +110,10 @@ public class MemberService implements UserDetailsService {
         }
         return null; // 또는 예외 처리
     }
+    public boolean isLogined(){
+        String username = getCurrentUsername();
+        return username != null;
+    }
     /// 현재 유저 닉네임
     public String getCurrentNickname() {
             Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
@@ -145,7 +155,7 @@ public class MemberService implements UserDetailsService {
                 .password(passwordEncoder.encode("admin"))
                 .nickname("administrator")
                 .enabled(true)
-                .emailToken("aa")
+                .emailToken("JJoYul")
                 .RefreshToken(null).build();
         memberRepository.save(member);
     }

@@ -5,6 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +23,10 @@ import project.demo.article.repository.ArticleImageRepository;
 import project.demo.article.repository.ArticleRepository;
 import project.demo.album.repository.AlbumImageRepository;
 import project.demo.image.service.ImageService;
+import project.demo.member.repository.MemberRepository;
 import project.demo.member.service.MemberService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +38,7 @@ public class ArticleService {
     private final ImageService imageService;
     private final ArticleImageRepository articleImageRepository;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     /// 게시글 생성
     @Transactional
@@ -90,6 +97,7 @@ public class ArticleService {
         List<Comment> comments = article.getComment();
         return comments;
     }
+    /// 게시글 수정
     public ResponseEntity<String> editAticle(long id, ArticleDTO articleDTO, MultipartFile image) {
         String nickname = memberService.getCurrentNickname();
         Article article = articleRepository.findById(id).orElse(null);
@@ -102,18 +110,55 @@ public class ArticleService {
             ArticleImage articleImage = articleImageRepository.findByArticle(article).orElse(null);
             if(articleImage == null) {
                 articleImage = ArticleImage.builder().article(article).url(url).build();
-                articleImageRepository.save(articleImage);
             }
             else articleImage.setUrl(url);
+            articleImageRepository.save(articleImage);
+            articleRepository.save(article);
         }return ResponseEntity.ok("success");
+    }
+    /// 상위 4개 표시
+    public ResponseEntity<?> getArticle4entity() {
+        List<Article> articles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream().limit(4).toList();
+        List<ArticleListDTO> articleListDTO = new ArrayList<>();
+        for(Article article : articles){
+            articleListDTO.add(new ArticleListDTO(article));
+        }
+        return ResponseEntity.ok(articleListDTO);
+    }
+    /// 페이징 조회
+    public ResponseEntity<?> getArticlesPerPage(int page) {
+        int pageSize = 9;
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").descending());
+        Page<Article> articlePage = articleRepository.findAll(pageable);
+        List<Article> articles = articlePage.getContent();
+        List<ArticleListDTO> articleListDTO = new ArrayList<>();
+        for(Article article : articles){
+            articleListDTO.add(new ArticleListDTO(article));
+        }
+        return ResponseEntity.ok(articleListDTO);
     }
     @EventListener(ApplicationReadyEvent.class)
     public void initarticle(){
+        for(int i = 0; i < 200; i ++){
+            Article article = Article.builder()
+                    .author("test")
+                    .content("test")
+                    .title("test")
+                    .build();
+            articleRepository.save(article);
+            ArticleImage articleImage = ArticleImage.builder()
+                    .article(article)
+                    .url("/images/article/article" + (i%5+1) + ".png")
+                    .build();
+            articleImageRepository.save(articleImage);
+        }
         for(int i = 1; i < 6; i++){
             Article article = Article.builder()
                     .title("오늘 하루도 즐겁게 " + i)
                     .content("대충 오늘 재밌었다는 얘기 " + i)
                     .author("JJoYul")
+                    //.member(memberRepository.findByNickname("JJoYul"))
                     .build();
             articleRepository.save(article);
             ArticleImage articleImage = ArticleImage.builder()
@@ -122,8 +167,6 @@ public class ArticleService {
                     .build();
             articleImageRepository.save(articleImage);
         }
-
-
-
     }
+
 }

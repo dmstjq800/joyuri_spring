@@ -2,6 +2,7 @@ package project.demo.article.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,12 @@ import project.demo.article.dto.ArticleDTO;
 import project.demo.article.dto.ArticleDetailDTO;
 import project.demo.article.dto.ArticleListDTO;
 import project.demo.article.entity.Article;
+import project.demo.article.entity.ArticleLike;
+import project.demo.article.repository.ArticleLikeRepository;
+import project.demo.article.service.ArticleLikeService;
 import project.demo.article.service.ArticleService;
 import project.demo.member.dto.MemberDTO;
+import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
 import project.demo.security.resultdata.RsData;
 
@@ -26,6 +31,8 @@ import java.util.concurrent.ExecutionException;
 public class ArticleController {
     private final ArticleService articleService;
     private final MemberService memberService;
+    private final ArticleLikeService articleLikeService;
+
 
     @GetMapping("/write")
     public String write() {
@@ -47,12 +54,10 @@ public class ArticleController {
     /// 게시글 작성
     @PostMapping("/write")
     public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
-        String nickname = memberService.getCurrentNickname();
         /// image가 null로 올지 비어있는 상태로 올지 확인필요
-        if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
+        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         if(articleDTO.getTitle().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
-
-        return articleService.createArticle(articleDTO, nickname, image);
+        return articleService.createArticle(articleDTO, memberService.getCurrentNickname(), image);
     }
     ///  게시글 조회
     @GetMapping("/{id}")
@@ -68,14 +73,23 @@ public class ArticleController {
         return articleService.deleteArticle(Long.parseLong(id), nickname);
     }
     /// 게시글 리스트
-    @GetMapping("/list")
+    @GetMapping("/listtest")
     public ResponseEntity<List<ArticleListDTO>> listArticle() {
         return ResponseEntity.ok(articleService.getArticlelist());
+    }
+    /// 게시글 상위 4개
+    @GetMapping("/getfour")
+    public ResponseEntity<?> getArticle4Entity(){
+        return articleService.getArticle4entity();
+    }
+    /// 게시글 페이징
+    @GetMapping("/list")
+    public ResponseEntity<?> getArticleList(@RequestParam(defaultValue = "0") int page) {
+        return articleService.getArticlesPerPage(page);
     }
     /// 게시글 수정
     @PostMapping("/edit{id}")
     public ResponseEntity<String> editArticle(@PathVariable String id, @RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
-
         return articleService.editAticle(Long.parseLong(id), articleDTO, image);
     }
 
@@ -83,6 +97,14 @@ public class ArticleController {
     public ResponseEntity<Article> testArticle(@PathVariable String id) {
         Article article = articleService.findById(Long.parseLong(id));
         return ResponseEntity.ok(article);
+    }
+    /// 좋아요
+    @PostMapping("/{id}/likeit")
+    public ResponseEntity<?> likeArticle(@PathVariable String id) {
+        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no data");
+        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
+        return articleLikeService.like(Long.parseLong(id));
+
     }
 
 }

@@ -12,6 +12,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Track {
+    public Track(String title, String description, String youtubeUrl) {
+        this.title = title;
+        this.description = description;
+        this.youtubeUrl = youtubeUrl;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -21,10 +26,11 @@ public class Track {
     private String youtubeUrl;
 
     @Lob
-    private String Description;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "album_id")
     @JsonIgnore
     private Album album;
+
 }

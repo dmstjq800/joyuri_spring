@@ -1,12 +1,15 @@
 package project.demo.article.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import project.demo.album.entity.AlbumImage;
+import project.demo.member.entity.Member;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,8 +36,8 @@ public class Article {
     @Lob
     private String content;
 
-
     private String author;
+
 
     @CreatedDate
     @Column(updatable = false)
@@ -50,6 +53,6 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment = new ArrayList<>();
 
-
+    private long likes;
 
 }
