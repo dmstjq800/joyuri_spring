@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.album.dto.AlbumDTO;
 import project.demo.album.service.AlbumService;
+import project.demo.article.entity.ArticleImage;
+import project.demo.article.repository.ArticleRepository;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/album")
 public class AlbumController {
     private final AlbumService albumService;
+    private final ArticleRepository articleRepository;
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
@@ -38,6 +41,12 @@ public class AlbumController {
     @PostMapping("/delete{id}")
     public ResponseEntity<?> deleteAlbum(@PathVariable String id) {
         return albumService.deleteAlbum(Long.parseLong(id));
+    }
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        ArticleImage articleImage = ArticleImage.builder()
+                .url("aa").article(articleRepository.findById((long) 1).orElse(null)).build();
+        return ResponseEntity.ok(articleImage);
     }
 
 }

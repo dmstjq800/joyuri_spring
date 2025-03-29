@@ -19,49 +19,45 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/article/{id}")
+@RequestMapping("/article")
 public class CommetController {
     private final CommentService commentService;
     private final MemberService memberService;
     private final ArticleService articleService;
     /// 댓글 작성
-    @PostMapping("/insertComment")
-    public ResponseEntity<String> insertComment(@PathVariable String id, @RequestBody ArticleDTO articleDTO) {
+    @PostMapping("/{id}/insertComment")
+    public ResponseEntity<String> insertComment(@PathVariable String id, @RequestBody CommentDTO commentDTO) {
+        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         String nickname = memberService.getCurrentNickname();
-        String content = articleDTO.getContent();
-        if(nickname == null)  {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
-        }
 
-        Article article = articleService.findById(Long.parseLong(id));
-        if(article == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
-
-        return commentService.insertComment(article, content, nickname);
+        return commentService.insertComment(Long.parseLong(id), commentDTO, nickname);
     }
     /// 댓글 삭제
     @PostMapping("/deleteComment")
-    public ResponseEntity<String> deleteCommnet(@PathVariable String id, String commentId) {
-        String nickname = memberService.getCurrentNickname();
-        Article article = articleService.findById(Long.parseLong(id));
-        if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("require login");
-        if(article == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
+    public ResponseEntity<String> deleteCommnet(@RequestBody CommentDTO commentDTO) {
+        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
 
-        return commentService.deleteCommnet(Long.parseLong(commentId), article, nickname);
+        return commentService.deleteCommnet(commentDTO);
     }
 
     /// 댓글 리스트
-    @GetMapping("/commentList")
+    @GetMapping("/{id}/commentList")
     public ResponseEntity <List<CommentDTO>> commentList(@PathVariable String id) {
-        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.notFound().build();
+        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(commentService.getCommentList(Long.parseLong(id)));
+    }
+    /// 대댓글 리스트
+    @GetMapping("/getChild")
+    public ResponseEntity<?> childList(String id) {
+        return commentService.findByParentId(Long.parseLong(id));
+    }
+    /// 대댓글
+    @PostMapping("/insertChildren")
+    public ResponseEntity<String> insertChildren(@RequestBody CommentDTO commentDTO) {
+        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
 
+        return commentService.insertChildren(commentDTO);
     }
 
-    @PostMapping("/test")
-    public List<Comment> test(@PathVariable String id) {
-       List<Comment> commentList = articleService.getCommentsByArticleId(Long.parseLong(id));
-       return commentList;
-
-    }
 
 }

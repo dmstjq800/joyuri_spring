@@ -38,12 +38,18 @@ public class Article {
 
     private String author;
 
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "author", referencedColumnName = "nickname")
+    // private Member author;
+
 
     @CreatedDate
     @Column(updatable = false)
+
     private LocalDateTime CreateDate;
 
     @LastModifiedDate
+
     private LocalDateTime ModifyDate;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)

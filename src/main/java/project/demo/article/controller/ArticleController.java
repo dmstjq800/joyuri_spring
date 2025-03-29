@@ -62,12 +62,12 @@ public class ArticleController {
     ///  게시글 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> getArticleDetail(@PathVariable String id) {
-        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no data");
-        return ResponseEntity.ok(articleService.getArticleDetail(Long.parseLong(id)));
+
+        return articleService.getArticleDetail(Long.parseLong(id));
     }
 
     /// 게시글 삭제
-    @PostMapping("/delete{id}")
+    @PostMapping("/{id}/delete")
     public ResponseEntity<String> deleteArticle(@PathVariable String id) {
         String nickname = memberService.getCurrentNickname();
         return articleService.deleteArticle(Long.parseLong(id), nickname);
@@ -84,20 +84,15 @@ public class ArticleController {
     }
     /// 게시글 페이징
     @GetMapping("/list")
-    public ResponseEntity<?> getArticleList(@RequestParam(defaultValue = "0") int page) {
-        return articleService.getArticlesPerPage(page);
+    public ResponseEntity<?> getArticleList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size) {
+        return articleService.getArticlesPerPage(page, size);
     }
     /// 게시글 수정
-    @PostMapping("/edit{id}")
+    @PostMapping("/{id}/edit")
     public ResponseEntity<String> editArticle(@PathVariable String id, @RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
         return articleService.editAticle(Long.parseLong(id), articleDTO, image);
     }
 
-    @GetMapping("/test{id}")
-    public ResponseEntity<Article> testArticle(@PathVariable String id) {
-        Article article = articleService.findById(Long.parseLong(id));
-        return ResponseEntity.ok(article);
-    }
     /// 좋아요
     @PostMapping("/{id}/likeit")
     public ResponseEntity<?> likeArticle(@PathVariable String id) {

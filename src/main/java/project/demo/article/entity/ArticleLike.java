@@ -24,7 +24,7 @@ public class ArticleLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member; // User 엔티티가 있다고 가정합니다.
+    private Member member;
 
 
     public ArticleLike(Article article, Member member) {

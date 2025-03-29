@@ -16,15 +16,11 @@ public class AlbumImage extends Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     private String url;
-
     @ManyToOne
     @JoinColumn(name = "album_id")
     @JsonIgnore
     private Album album;
-
     public void updateUrl(String url) {
         this.url = url;
     }

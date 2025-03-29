@@ -43,4 +43,11 @@ public class ArticleLikeService {
             return ResponseEntity.ok("좋아요 취소, 현재 좋아요 수: " + article.getLikes());
         }
     }
+    public boolean liked(Article article) {
+        Member member = memberService.findByusername(memberService.getCurrentUsername());
+        if(member == null) {return false;}
+        ArticleLike articleLike = articleLikeRepository.findByArticleIdAndMemberId(article.getId(), member.getId()).orElse(null);
+        return articleLike != null;
+
+    }
 }

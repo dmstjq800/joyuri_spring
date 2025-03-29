@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Album {
-    public Album(String albumTitle, LocalDate releaseDate, String description) {
+    public Album(String albumTitle, String description, LocalDate releaseDate) {
         this.title = albumTitle;
         this.releaseDate = releaseDate;
         this.description = description;
@@ -34,6 +34,7 @@ public class Album {
 
     @Lob
     private String description;
+
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
     private List<AlbumImage> albumImages = new ArrayList<>();

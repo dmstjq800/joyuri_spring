@@ -24,21 +24,27 @@ public class ArticleDetailDTO {
     private String title;
     private String content;
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
-    private LocalDateTime CreateDate;
-    private LocalDateTime ModifyDate;
+    private LocalDateTime createDate;
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
+    private LocalDateTime modifyDate;
     private List<ArticleImage> images;
-    private List<Comment> comments;
+    private List<CommentDTO> comments;
+    private int commentCount;
     private long likes;
+    private boolean liked;
 
-    public ArticleDetailDTO(Article article) {
+
+    public ArticleDetailDTO(Article article, List<CommentDTO> commentDTOList, Boolean liked) {
         this.id = article.getId();
         this.author = article.getAuthor();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.CreateDate = article.getCreateDate();
-        this.ModifyDate = article.getModifyDate();
-        this.comments = article.getComment();
+        this.createDate = article.getCreateDate();
+        this.modifyDate = article.getModifyDate();
+        this.comments = commentDTOList;
         this.images = article.getArticleImages();
         this.likes = article.getLikes();
+        this.commentCount = article.getComment().size();
+        this.liked = liked;
     }
 }

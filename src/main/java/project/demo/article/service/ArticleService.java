@@ -16,12 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 import project.demo.article.dto.ArticleDTO;
 import project.demo.article.dto.ArticleDetailDTO;
 import project.demo.article.dto.ArticleListDTO;
+import project.demo.article.dto.CommentDTO;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.ArticleImage;
+import project.demo.article.entity.ArticleLike;
 import project.demo.article.entity.Comment;
 import project.demo.article.repository.ArticleImageRepository;
 import project.demo.article.repository.ArticleRepository;
 import project.demo.album.repository.AlbumImageRepository;
+import project.demo.article.repository.CommentRepository;
 import project.demo.image.service.ImageService;
 import project.demo.member.repository.MemberRepository;
 import project.demo.member.service.MemberService;
@@ -38,7 +41,9 @@ public class ArticleService {
     private final ImageService imageService;
     private final ArticleImageRepository articleImageRepository;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
+    private final ArticleLikeService articleLikeService;
 
     /// 게시글 생성
     @Transactional
@@ -47,8 +52,6 @@ public class ArticleService {
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
                 .author(nickname)
-                .comment(new ArrayList<>())
-                .articleImages(new ArrayList<>())
                 .build();
         articleRepository.save(article);
         if(image != null) {
@@ -69,9 +72,13 @@ public class ArticleService {
         return ResponseEntity.ok("success");
     }
     /// 게시글 상세 조회
-    public ArticleDetailDTO getArticleDetail(long id) {
+    public ResponseEntity<?> getArticleDetail(long id) {
         Article article = articleRepository.findById(id).orElse(null);
-        return new ArticleDetailDTO(article);
+        if(article==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+        boolean liked = articleLikeService.liked(article);
+
+        List<CommentDTO> commentDTOList = commentService.getCommentList(id);
+        return ResponseEntity.ok(new ArticleDetailDTO(article, commentDTOList, liked));
     }
     /// 게시글 ListDTO 반환 ///
     public List<ArticleListDTO> getArticlelist() {
@@ -126,10 +133,9 @@ public class ArticleService {
         return ResponseEntity.ok(articleListDTO);
     }
     /// 페이징 조회
-    public ResponseEntity<?> getArticlesPerPage(int page) {
-        int pageSize = 9;
+    public ResponseEntity<?> getArticlesPerPage(int page, int size) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Article> articlePage = articleRepository.findAll(pageable);
         List<Article> articles = articlePage.getContent();
         List<ArticleListDTO> articleListDTO = new ArrayList<>();
@@ -140,16 +146,16 @@ public class ArticleService {
     }
     @EventListener(ApplicationReadyEvent.class)
     public void initarticle(){
-        for(int i = 0; i < 200; i ++){
+        for(int i = 0; i < 25; i ++){
             Article article = Article.builder()
-                    .author("test")
-                    .content("test")
-                    .title("test")
+                    .author("test" )
+                    .content("test " + i)
+                    .title("test " + i)
                     .build();
             articleRepository.save(article);
             ArticleImage articleImage = ArticleImage.builder()
                     .article(article)
-                    .url("/images/article/article" + (i%5+1) + ".png")
+                    .url("/images/article/article" + (i%11+1) + ".png")
                     .build();
             articleImageRepository.save(articleImage);
         }
@@ -166,6 +172,19 @@ public class ArticleService {
                     .url("/images/article/article" + i + ".png")
                     .build();
             articleImageRepository.save(articleImage);
+            for(int j = 0; j < 3; j++) {
+                Comment comment = Comment.builder()
+                        .article(article)
+                        .author("user" + (j+1))
+                        .content("이쁘긴 이쁘네").build();
+                commentRepository.save(comment);
+                Comment cocoment = Comment.builder()
+                        .author("JJoYul")
+                        .parent(comment)
+                        .article(article)
+                        .content("감사합니다").build();
+                commentRepository.save(cocoment);
+            }
         }
     }
 

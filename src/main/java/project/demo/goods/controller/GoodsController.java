@@ -2,15 +2,16 @@ package project.demo.goods.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import project.demo.goods.dto.GoodsListDTO;
-import project.demo.goods.entity.GoodsImage;
+import org.springframework.web.bind.annotation.*;
+import project.demo.article.dto.CommentDTO;
+import project.demo.goods.entity.Goods;
 import project.demo.goods.service.GoodsService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/goods")
@@ -18,9 +19,21 @@ import java.util.List;
 public class GoodsController {
     private final GoodsService goodsService;
 
-    @GetMapping("/list")
-    public ResponseEntity<?> getGoodsList(){
-        List<GoodsListDTO> list = goodsService.getGoodsList();
-        return ResponseEntity.ok(list);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getComment(@PathVariable String id) {
+        return goodsService.findById(Long.parseLong(id));
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getGoodsList2(@RequestParam(value = "sort", defaultValue = "last") String sort,
+                                          @RequestParam(value = "name", required = false) String name,
+                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                          @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return goodsService.getGoodsList(name, sort, pageable);
+    }
+
+
 }

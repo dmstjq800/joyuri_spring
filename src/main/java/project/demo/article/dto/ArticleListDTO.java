@@ -19,7 +19,7 @@ import java.util.List;
 public class ArticleListDTO {
     private Long id;
     private String title;
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime CreateDate;
     private List<ArticleImage> articleImageList;
     String content;

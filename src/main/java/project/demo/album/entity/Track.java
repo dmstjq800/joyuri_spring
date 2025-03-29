@@ -12,10 +12,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Track {
-    public Track(String title, String description, String youtubeUrl) {
+    public Track(String title, String description, String youtubeUrl, Album album) {
         this.title = title;
         this.description = description;
         this.youtubeUrl = youtubeUrl;
+        this.album = album;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
