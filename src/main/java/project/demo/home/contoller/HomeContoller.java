@@ -24,7 +24,7 @@ public class HomeContoller {
     }
     @GetMapping("/home2")
     public ResponseEntity<?> HomeContoller2() {
-        
+
         return ResponseEntity.ok("HI");
     }
 }

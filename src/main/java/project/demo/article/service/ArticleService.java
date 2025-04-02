@@ -143,19 +143,8 @@ public class ArticleService {
     /// init service
     @EventListener(ApplicationReadyEvent.class)
     public void initarticle(){
-        for(int i = 0; i < 25; i ++){
-            Article article = Article.builder()
-                    .author("test" )
-                    .content("test " + i)
-                    .title("test " + i)
-                    .build();
-            articleRepository.save(article);
-            ArticleImage articleImage = ArticleImage.builder()
-                    .article(article)
-                    .url("/images/article/article" + (i%11+1) + ".png")
-                    .build();
-            articleImageRepository.save(articleImage);
-        }
+        Article check = articleRepository.findById((long)1).orElse(null);
+        if(check != null) return;
         for(int i = 1; i < 6; i++){
             Article article = Article.builder()
                     .title("오늘 하루도 즐겁게 " + i)
@@ -169,19 +158,7 @@ public class ArticleService {
                     .url("/images/article/article" + i + ".png")
                     .build();
             articleImageRepository.save(articleImage);
-            for(int j = 0; j < 3; j++) {
-                Comment comment = Comment.builder()
-                        .article(article)
-                        .author("user" + (j+1))
-                        .content("이쁘긴 이쁘네").build();
-                commentRepository.save(comment);
-                Comment cocoment = Comment.builder()
-                        .author("JJoYul")
-                        .parent(comment)
-                        .article(article)
-                        .content("감사합니다").build();
-                commentRepository.save(cocoment);
-            }
+
         }
     }
 

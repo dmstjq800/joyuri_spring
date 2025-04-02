@@ -27,18 +27,14 @@ public class InitService {
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void saveJoYuriAlbums() {
-
+        Album album = albumRepository.findById((long)1).orElse(null);
+        if(album != null){ return;}
         Album glassy = new Album("GLASSY", "조유리 첫 번째 싱글", LocalDate.of(2021, 10, 7), "Single");
         Album major = new Album("Op.22 Y-Waltz : in Major", "조유리 첫 번째 미니앨범", LocalDate.of(2022, 6, 2), "Mini");
         Album minor = new Album("Op.22 Y-Waltz : in Minor", "조유리 두 번째 싱글", LocalDate.of(2022, 10, 24), "Single");
         Album loveAll = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
 
-        Album test = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
-        Album test2 = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
-        Album test3 = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
-        albumRepository.save(test);
-        albumRepository.save(test2);
-        albumRepository.save(test3);
+
         albumRepository.saveAll(List.of(glassy, major, minor, loveAll));
 
         trackRepository.saveAll(List.of(
@@ -62,7 +58,7 @@ public class InitService {
                 new Track("Hang On", "수록곡", "https://youtu.be/example15", loveAll),
                 new Track("Bruise", "수록곡", "https://youtu.be/example16", loveAll)
         ));
-        for (int i = 1 ; i < 8 ; i++) {
+        for (int i = 1 ; i < 4 ; i++) {
             AlbumImage albumImage = AlbumImage.builder()
                     .url("/images/album/album" + i + ".png").album(albumRepository.findById((long)i).orElse(null)).build();
             albumImageRepository.save(albumImage);
