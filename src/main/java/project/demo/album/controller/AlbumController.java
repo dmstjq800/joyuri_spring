@@ -2,6 +2,8 @@ package project.demo.album.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,12 +29,17 @@ public class AlbumController {
         //if(image.isEmpty()) image = null;
         return albumService.addAlbum(albumDTO, image);
     }
-
+    /// 앨범 리스트
+    ///
     @GetMapping("/list")
     public ResponseEntity<?> getAlbumList() {
+
+
         return albumService.getAlbumList();
     }
 
+
+    ///  앨범 디테일
     @GetMapping("/{id}")
     public ResponseEntity<?> getAlbum(@PathVariable String id) {
         return albumService.getAlbumDetailById(Long.parseLong(id));

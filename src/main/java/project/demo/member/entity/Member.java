@@ -8,9 +8,13 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -42,9 +46,14 @@ public class Member implements UserDetails {
 
     private String emailToken;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // 여기서는 간단하게 null 처리. 필요에 따라 권한 설정
+        return this.roles.stream()
+                     .map(SimpleGrantedAuthority::new)
+                     .collect(Collectors.toList());
     }
 
     @Column(columnDefinition = "TEXT")

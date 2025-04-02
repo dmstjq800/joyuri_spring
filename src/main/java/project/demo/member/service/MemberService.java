@@ -6,6 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,8 @@ public class MemberService implements UserDetailsService {
     private final JavaMailSender mailSender;
     @Autowired
     private TemplateEngine templateEngine;
+    @Value("${frontend-url}")
+    private String front_url;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -65,6 +68,7 @@ public class MemberService implements UserDetailsService {
                 .username(username)
                 .password(password)
                 .nickname(nickname)
+                .roles(List.of("ROLE_USER"))
                 .emailToken(UUID.randomUUID().toString())
                 .enabled(false)
                 .build();
@@ -83,7 +87,7 @@ public class MemberService implements UserDetailsService {
             // Thymeleaf를 사용하여 HTML 내용 생성
             Context context = new Context();
             context.setVariable("nickname", member.getNickname()); // 예시: 닉네임 전달
-            context.setVariable("verificationLink", "http://localhost:3000/verifyemail?token=" + member.getEmailToken()); // 실제 서비스 URL로 변경
+            context.setVariable("verificationLink", front_url + "/verifyemail?token=" + member.getEmailToken()); // 실제 서비스 URL로 변경
 
             String htmlContent = templateEngine.process("mail/verifymail", context);
 
@@ -122,10 +126,9 @@ public class MemberService implements UserDetailsService {
         }
         /// 유저 email nickname
     public MemberResponseDTO getMemberResponseDTO() {
-        MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
-        memberResponseDTO.setUsername(getCurrentUsername());
-        memberResponseDTO.setNickname(getCurrentNickname());
-        return memberResponseDTO;
+        Member member = findByusername(getCurrentUsername());
+        if(member == null) return null;
+        return new MemberResponseDTO(member);
     }
     /// 닉네임 변경
     public ResponseEntity<?> updateNickname(MemberDTO memberDTO) {
@@ -155,6 +158,7 @@ public class MemberService implements UserDetailsService {
                 .password(passwordEncoder.encode("admin"))
                 .nickname("administrator")
                 .enabled(true)
+                .roles(List.of("ROLE_ADMIN"))
                 .emailToken("JJoYul")
                 .RefreshToken(null).build();
         memberRepository.save(member);

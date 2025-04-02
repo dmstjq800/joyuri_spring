@@ -27,10 +27,6 @@ public class ImageService {
             String newFilename = UUID.randomUUID().toString() + oriFilename.substring(oriFilename.lastIndexOf("."));
             File dest = new File(filePath + newFilename);
             file.transferTo(dest);
-
-//            AlbumImage albumImage = AlbumImage.builder().url(newFilename).album(album).build();
-//            imageRepository.save(albumImage);
-//            album.getAlbumImages().add(albumImage);
             return "/images/" + path + newFilename;
         }catch (Exception e){
             return e.getMessage();

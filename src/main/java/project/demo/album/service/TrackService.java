@@ -15,7 +15,7 @@ import project.demo.album.repository.TrackRepository;
 public class TrackService {
     private final TrackRepository trackRepository;
     private final AlbumRepository albumRepository;
-
+    /// 트랙추가
     public ResponseEntity<?> addTrack(Long id, TrackDTO trackDTO) {
         Album album = albumRepository.findById(id).orElse(null);
         if (album == null) {return ResponseEntity.status(404).body("Album not found");}

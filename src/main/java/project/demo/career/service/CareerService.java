@@ -19,7 +19,7 @@ public class CareerService {
     private final CareerRepository careerRepository;
     private final CareerImageRepository careerImageRepository;
     public ResponseEntity<?> getList() {
-        List<Career> careerList = careerRepository.findAll();
+        List<Career> careerList = careerRepository.findAllByOrderByIdDesc();
         return ResponseEntity.ok(careerList);
     }
 
@@ -31,6 +31,7 @@ public class CareerService {
         Career career = Career.builder()
                 .careerName("Produce48")
                 .description("한일합작 아이돌 서바이벌 프로젝트")
+
                 .url("https://www.youtube.com/playlist?list=PLIBmjIHzZF9lx2I5GyZGJtQRbNt7_UMGD")
                 .build();
         careerRepository.save(career);

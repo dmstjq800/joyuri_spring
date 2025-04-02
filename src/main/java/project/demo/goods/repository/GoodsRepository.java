@@ -14,17 +14,10 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 //    //내림
 //    List<Goods> findAllByOrderByPriceDesc();
 
-    List<Goods> findAllByGoodsNameContainingIgnoreCase(String goodsName);
-    List<Goods> findByGoodsNameContainingIgnoreCaseOrderByIdDesc(String goodsName);
-
-    /// 이름 + 가격 오름차
-    List<Goods> findAllByGoodsNameContainingIgnoreCaseOrderByPriceAsc(String goodsName);
-    /// 이름 + 가격 내림차
-    List<Goods> findAllByGoodsNameContainingIgnoreCaseOrderByPriceDesc(String goodsName);
 
     Page<Goods> findByGoodsNameContainingIgnoreCaseOrderByPriceAsc(String name, Pageable pageable);
 
-    Page<Goods> findByGoodsNameContaining(String name, Pageable pageable);
+    Page<Goods> findByGoodsNameContainingOrderByIdDesc(String name, Pageable pageable);
 
     Page<Goods> findByGoodsNameContainingIgnoreCaseOrderByPriceDesc(String name, Pageable pageable);
 

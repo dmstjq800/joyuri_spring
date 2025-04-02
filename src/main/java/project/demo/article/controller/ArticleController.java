@@ -38,19 +38,7 @@ public class ArticleController {
     public String write() {
         return "article/article";
     }
-//    @PostMapping("/write")
-//    public ResponseEntity<String> writeArticle(String title, String content, @RequestParam("image") MultipartFile image) {
-//        String nickname = memberService.getCurrentNickname();
-//        ArticleDTO articleDTO = new ArticleDTO();
-//        articleDTO.setTitle(title);
-//        articleDTO.setContent(content);
-//
-//        //if(nickname == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
-//        if(articleDTO.getTitle().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
-//        if(image.isEmpty()) image = null;
-//
-//        return articleService.createArticle(articleDTO, nickname, image);
-//    }
+
     /// 게시글 작성
     @PostMapping("/write")
     public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {

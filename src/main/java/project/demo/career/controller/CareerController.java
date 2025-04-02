@@ -18,7 +18,4 @@ public class CareerController {
     public ResponseEntity<?> getCareerList() {
         return careerService.getList();
     }
-
-
-
 }

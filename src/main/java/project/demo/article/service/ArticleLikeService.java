@@ -20,7 +20,7 @@ public class ArticleLikeService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
-
+    /// 좋아요
     public ResponseEntity<?> like(long id) {
         Article article = articleRepository.findById(id).orElse(null);
         Member member = memberService.findByusername(memberService.getCurrentUsername());
@@ -43,6 +43,7 @@ public class ArticleLikeService {
             return ResponseEntity.ok("좋아요 취소, 현재 좋아요 수: " + article.getLikes());
         }
     }
+    /// 좋아요 확인
     public boolean liked(Article article) {
         Member member = memberService.findByusername(memberService.getCurrentUsername());
         if(member == null) {return false;}

@@ -23,7 +23,6 @@ public class Track {
     private long id;
 
     private String title;
-
     private String youtubeUrl;
 
     @Lob

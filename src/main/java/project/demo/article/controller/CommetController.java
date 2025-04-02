@@ -51,7 +51,7 @@ public class CommetController {
     public ResponseEntity<?> childList(String id) {
         return commentService.findByParentId(Long.parseLong(id));
     }
-    /// 대댓글
+    /// 대댓글 작성
     @PostMapping("/insertChildren")
     public ResponseEntity<String> insertChildren(@RequestBody CommentDTO commentDTO) {
         if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");

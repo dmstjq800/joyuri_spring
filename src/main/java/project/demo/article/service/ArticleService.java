@@ -94,16 +94,12 @@ public class ArticleService {
     public List<Article> findAllByOrderByIdDesc() {
         return articleRepository.findAllByOrderByIdDesc();
     }
-    ///  게시글 조회
+    ///  게시글 디테일
     public Article findById(long id) {
         return articleRepository.findById(id).orElse(null);
     }
     /// 게시글 댓글 조회
-    public List<Comment> getCommentsByArticleId(long id) {
-        Article article = articleRepository.findById(id).orElse(null);
-        List<Comment> comments = article.getComment();
-        return comments;
-    }
+
     /// 게시글 수정
     public ResponseEntity<String> editAticle(long id, ArticleDTO articleDTO, MultipartFile image) {
         String nickname = memberService.getCurrentNickname();
@@ -144,6 +140,7 @@ public class ArticleService {
         }
         return ResponseEntity.ok(articleListDTO);
     }
+    /// init service
     @EventListener(ApplicationReadyEvent.class)
     public void initarticle(){
         for(int i = 0; i < 25; i ++){

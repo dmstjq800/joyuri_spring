@@ -1,9 +1,11 @@
 package project.demo.career.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,9 @@ public class Career {
     private String careerName;
     private String description;
     private String url;
+
+    @JsonFormat(pattern = "yyyy.MM")
+    private LocalDate releaseDate;
 
     @OneToMany(mappedBy = "career", cascade = CascadeType.ALL)
     private List<CareerImage> careerImages = new ArrayList<>();

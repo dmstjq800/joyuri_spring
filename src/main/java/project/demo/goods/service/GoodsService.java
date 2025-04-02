@@ -45,7 +45,7 @@ public class GoodsService {
                 Page<Goods> goodsPage = goodsRepository.findByGoodsNameContainingIgnoreCaseOrderByPriceDesc(name, pageable);
                 return ResponseEntity.ok(goodsPage);
             } else {
-                Page<Goods> goodsPage = goodsRepository.findByGoodsNameContaining(name, pageable);
+                Page<Goods> goodsPage = goodsRepository.findByGoodsNameContainingOrderByIdDesc(name, pageable);
                 return ResponseEntity.ok(goodsPage);
             }
         } else {

@@ -24,7 +24,7 @@ public class AlbumDTO {
     private String description;
     private LocalDate releaseDate;
     private List<AlbumImage> albumImages;
-
+    private String tags;
 
     public AlbumDTO(Album album) {
         this.id = album.getId();
@@ -32,6 +32,6 @@ public class AlbumDTO {
         this.description = album.getDescription();
         this.releaseDate = album.getReleaseDate();
         this.albumImages = album.getAlbumImages();
-
+        this.tags = album.getTags();
     }
 }

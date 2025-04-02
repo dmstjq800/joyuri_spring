@@ -49,7 +49,7 @@ public class CommentService {
 
         return ResponseEntity.ok("success");
     }
-
+    /// 댓글 DTO
     public List<CommentDTO> getCommentList(long id) {
         List<Comment> commentList = commentRepository.findCommentByArticleIdAndParentIsNull(id).orElse(null);
         List<CommentDTO> commentDTOList = new ArrayList<>();
@@ -58,7 +58,7 @@ public class CommentService {
         }
         return commentDTOList;
     }
-
+    /// 대댓글 작성
     public ResponseEntity<String> insertChildren(CommentDTO commentDTO) {
         Comment parent = commentRepository.findById(commentDTO.getId()).orElse(null);
         if(parent == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("parent not found");
@@ -74,7 +74,7 @@ public class CommentService {
         commentRepository.save(children);
         return ResponseEntity.ok("success");
     }
-
+    /// 대댓글 DTO
     public ResponseEntity<?> findByParentId(long id) {
         List<Comment> comments = commentRepository.findByParentId(id).orElse(null);
         if(comments.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("commnet not found");

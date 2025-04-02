@@ -27,19 +27,24 @@ public class InitService {
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void saveJoYuriAlbums() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
-        Album glassy = new Album("GLASSY", "조유리 첫 번째 싱글", LocalDate.of(2021, 10, 7));
-        Album major = new Album("Op.22 Y-Waltz : in Major", "조유리 첫 번째 미니앨범", LocalDate.of(2022, 6, 2));
-        Album minor = new Album("Op.22 Y-Waltz : in Minor", "조유리 두 번째 싱글", LocalDate.of(2022, 10, 24));
-        Album loveAll = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9));
+        Album glassy = new Album("GLASSY", "조유리 첫 번째 싱글", LocalDate.of(2021, 10, 7), "Single");
+        Album major = new Album("Op.22 Y-Waltz : in Major", "조유리 첫 번째 미니앨범", LocalDate.of(2022, 6, 2), "Mini");
+        Album minor = new Album("Op.22 Y-Waltz : in Minor", "조유리 두 번째 싱글", LocalDate.of(2022, 10, 24), "Single");
+        Album loveAll = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
 
+        Album test = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
+        Album test2 = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
+        Album test3 = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
+        albumRepository.save(test);
+        albumRepository.save(test2);
+        albumRepository.save(test3);
         albumRepository.saveAll(List.of(glassy, major, minor, loveAll));
 
         trackRepository.saveAll(List.of(
-                new Track("GLASSY", "타이틀곡", "https://youtu.be/example1", glassy),
-                new Track("Express Moon", "수록곡", "https://youtu.be/example2", glassy),
-                new Track("가을 상자", "with 이석훈", "https://youtu.be/example3", glassy),
+                new Track("GLASSY", "타이틀곡", "https://www.youtube.com/watch?v=8rd_E4cmcBg", glassy),
+                new Track("Express Moon", "수록곡", "https://www.youtube.com/watch?v=YBNbIY1-xOU", glassy),
+                new Track("가을 상자", "with 이석훈", "https://www.youtube.com/watch?v=PxuPUu4AJjQ", glassy),
 
                 new Track("Round and Around", "수록곡", "https://youtu.be/example4", major),
                 new Track("러브 쉿!", "타이틀곡", "https://youtu.be/example5", major),
@@ -57,9 +62,9 @@ public class InitService {
                 new Track("Hang On", "수록곡", "https://youtu.be/example15", loveAll),
                 new Track("Bruise", "수록곡", "https://youtu.be/example16", loveAll)
         ));
-        for (int i = 1 ; i < 5 ; i++) {
+        for (int i = 1 ; i < 8 ; i++) {
             AlbumImage albumImage = AlbumImage.builder()
-                    .url("/images/album" + i + ".png").album(albumRepository.findById((long)i).orElse(null)).build();
+                    .url("/images/album/album" + i + ".png").album(albumRepository.findById((long)i).orElse(null)).build();
             albumImageRepository.save(albumImage);
         }
 
