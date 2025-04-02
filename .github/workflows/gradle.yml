@@ -60,7 +60,7 @@ jobs:
     - name: Deploy with CodeDeploy
       run: |
            aws deploy create-deployment \
-           --application-name spring-boot-app \
-           --deployment-group-name spring-boot-group \
+           --application-name springboot-app \
+           --deployment-group-name springboot-dg \
            --s3-location bucket=mybucket-ces-joyuri,bundleType=zip,key=joyuri/backend.zip \
            --region ap-northeast-2
