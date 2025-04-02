@@ -22,4 +22,9 @@ public class HomeContoller {
         MemberResponseDTO memberResponseDTO = memberService.getMemberResponseDTO();
         return ResponseEntity.ok(memberResponseDTO);
     }
+    @GetMapping("/home2")
+    public ResponseEntity<?> HomeContoller2() {
+        
+        return ResponseEntity.ok("HI");
+    }
 }
