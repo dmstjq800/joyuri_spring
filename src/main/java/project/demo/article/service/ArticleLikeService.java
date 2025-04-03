@@ -2,6 +2,7 @@ package project.demo.article.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.demo.article.entity.Article;
@@ -23,7 +24,9 @@ public class ArticleLikeService {
     /// 좋아요
     public ResponseEntity<?> like(long id) {
         Article article = articleRepository.findById(id).orElse(null);
+        if(article == null) return ResponseEntity.notFound().build();
         Member member = memberService.findByusername(memberService.getCurrentUsername());
+        if(member == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
 
         ArticleLike articleLike = articleLikeRepository.findByArticleIdAndMemberId(id, member.getId()).orElse(null);
         if(articleLike == null) {
@@ -49,6 +52,5 @@ public class ArticleLikeService {
         if(member == null) {return false;}
         ArticleLike articleLike = articleLikeRepository.findByArticleIdAndMemberId(article.getId(), member.getId()).orElse(null);
         return articleLike != null;
-
     }
 }

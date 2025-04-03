@@ -28,7 +28,6 @@ import project.demo.member.dto.MemberResponseDTO;
 import project.demo.member.dto.UpdatePasswordDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.repository.MemberRepository;
-import project.demo.security.resultdata.RsData;
 
 import java.util.List;
 import java.util.UUID;
@@ -79,19 +78,19 @@ public class MemberService implements UserDetailsService {
     /// 이메일 전송
         public void sendEmail(Member member) throws MessagingException {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // true: HTML 형식 사용
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(member.getUsername());
             helper.setSubject("이메일 인증 요청");
 
             // Thymeleaf를 사용하여 HTML 내용 생성
             Context context = new Context();
-            context.setVariable("nickname", member.getNickname()); // 예시: 닉네임 전달
-            context.setVariable("verificationLink", front_url + "/verifyemail?token=" + member.getEmailToken()); // 실제 서비스 URL로 변경
+            context.setVariable("nickname", member.getNickname());
+            context.setVariable("verificationLink", front_url + "/verifyemail?token=" + member.getEmailToken());
 
             String htmlContent = templateEngine.process("mail/verifymail", context);
 
-            helper.setText(htmlContent, true); // 두 번째 인자 true: HTML 형식임을 명시
+            helper.setText(htmlContent, true);
 
             mailSender.send(message);
         }

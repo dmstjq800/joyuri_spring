@@ -12,23 +12,20 @@ import project.demo.album.entity.Track;
 import project.demo.album.repository.AlbumImageRepository;
 import project.demo.album.repository.AlbumRepository;
 import project.demo.album.repository.TrackRepository;
-import project.demo.article.entity.ArticleImage;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class InitService {
+public class AlbumInitService {
     private final AlbumRepository albumRepository;
     private final AlbumImageRepository albumImageRepository;
     private final TrackRepository trackRepository;
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void saveJoYuriAlbums() {
-        Album album = albumRepository.findById((long)1).orElse(null);
-        if(album != null){ return;}
+        if(albumRepository.count() > 0){ return;}
         Album glassy = new Album("GLASSY", "조유리 첫 번째 싱글", LocalDate.of(2021, 10, 7), "Single");
         Album major = new Album("Op.22 Y-Waltz : in Major", "조유리 첫 번째 미니앨범", LocalDate.of(2022, 6, 2), "Mini");
         Album minor = new Album("Op.22 Y-Waltz : in Minor", "조유리 두 번째 싱글", LocalDate.of(2022, 10, 24), "Single");

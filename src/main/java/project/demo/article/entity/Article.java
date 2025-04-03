@@ -38,10 +38,6 @@ public class Article {
 
     private String author;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "author", referencedColumnName = "nickname")
-    // private Member author;
-
 
     @CreatedDate
     @Column(updatable = false)

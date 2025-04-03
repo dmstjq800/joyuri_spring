@@ -19,12 +19,13 @@ import project.demo.goods.service.GoodsService;
 public class GoodsController {
     private final GoodsService goodsService;
 
-
+    /// 상세
     @GetMapping("/{id}")
     public ResponseEntity<?> getComment(@PathVariable String id) {
         return goodsService.findById(Long.parseLong(id));
     }
 
+    /// List 반환
     @GetMapping("/list")
     public ResponseEntity<?> getGoodsList2(@RequestParam(value = "sort", defaultValue = "last") String sort,
                                           @RequestParam(value = "name", required = false) String name,

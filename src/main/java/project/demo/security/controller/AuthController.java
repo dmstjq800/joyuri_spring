@@ -51,7 +51,7 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(jwt, member));
     }
-
+    /// 리프레시 토큰 검증
     @PostMapping("/refresh")
     public ResponseEntity<?> createRefreshToken(@RequestBody MemberDTO memberDTO) throws Exception {
         Member member = memberService.findByusername(memberDTO.getUsername());

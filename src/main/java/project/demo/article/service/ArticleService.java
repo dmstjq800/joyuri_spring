@@ -90,15 +90,9 @@ public class ArticleService {
         return articleListDTO;
     }
 
-    /// 게시글 역순 조회
-    public List<Article> findAllByOrderByIdDesc() {
-        return articleRepository.findAllByOrderByIdDesc();
-    }
-    ///  게시글 디테일
     public Article findById(long id) {
         return articleRepository.findById(id).orElse(null);
     }
-    /// 게시글 댓글 조회
 
     /// 게시글 수정
     public ResponseEntity<String> editAticle(long id, ArticleDTO articleDTO, MultipartFile image) {
@@ -139,27 +133,6 @@ public class ArticleService {
             articleListDTO.add(new ArticleListDTO(article));
         }
         return ResponseEntity.ok(articleListDTO);
-    }
-    /// init service
-    @EventListener(ApplicationReadyEvent.class)
-    public void initarticle(){
-        Article check = articleRepository.findById((long)1).orElse(null);
-        if(check != null) return;
-        for(int i = 1; i < 6; i++){
-            Article article = Article.builder()
-                    .title("오늘 하루도 즐겁게 " + i)
-                    .content("대충 오늘 재밌었다는 얘기 " + i)
-                    .author("JJoYul")
-                    //.member(memberRepository.findByNickname("JJoYul"))
-                    .build();
-            articleRepository.save(article);
-            ArticleImage articleImage = ArticleImage.builder()
-                    .article(article)
-                    .url("/images/article/article" + i + ".png")
-                    .build();
-            articleImageRepository.save(articleImage);
-
-        }
     }
 
 }

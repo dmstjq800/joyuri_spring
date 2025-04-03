@@ -2,28 +2,26 @@ package project.demo.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import project.demo.member.service.MemberService;
-import project.demo.security.jwt.JwtAuthenticationEntryPoint;
 import project.demo.security.jwt.JwtAuthenticationFilter;
-import project.demo.security.jwt.JwtExceptionFilter;
+
 
 import java.util.Arrays;
 
@@ -49,9 +47,6 @@ public class SecurityConfig {
                        // .requestMatchers("/home").authenticated()
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
-                //).exceptionHandling((exceptionHandling) ->
-                  //      exceptionHandling.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).formLogin((form) -> form.disable()
@@ -59,16 +54,16 @@ public class SecurityConfig {
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        //http.addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class);
         return http.build();
     }
 
+    @Value("${frontend-url}")
+    private String frontendUrl;
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
-        //configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 쿠키 허용
         configuration.setExposedHeaders(Arrays.asList("Set-Cookie"));

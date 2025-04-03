@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class Career {
     private String url;
 
     @JsonFormat(pattern = "yyyy.MM")
-    private LocalDate releaseDate;
+    private LocalDateTime releaseDate;
 
     @OneToMany(mappedBy = "career", cascade = CascadeType.ALL)
     private List<CareerImage> careerImages = new ArrayList<>();

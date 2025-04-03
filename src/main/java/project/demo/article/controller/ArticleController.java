@@ -19,7 +19,7 @@ import project.demo.article.service.ArticleService;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
-import project.demo.security.resultdata.RsData;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +84,7 @@ public class ArticleController {
     /// 좋아요
     @PostMapping("/{id}/likeit")
     public ResponseEntity<?> likeArticle(@PathVariable String id) {
-        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no data");
-        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         return articleLikeService.like(Long.parseLong(id));
-
     }
 
 }

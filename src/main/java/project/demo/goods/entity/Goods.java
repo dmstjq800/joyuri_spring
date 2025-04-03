@@ -25,4 +25,9 @@ public class Goods {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<GoodsImage> GoodsImages = new ArrayList<>();
 
+    public Goods(String goodsName, String description, int price) {
+        this.goodsName = goodsName;
+        this.description = description;
+        this.price = price;
+    }
 }
