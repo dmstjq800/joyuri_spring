@@ -1,3 +1,3 @@
 #!/bin/bash
 echo "Starting Spring Boot app..."
-systemctl start springboot
+sudo systemctl start springboot

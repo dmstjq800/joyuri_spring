@@ -2,10 +2,10 @@
 echo "Installing Spring Boot app..."
 
 # 디렉토리 준비
-mkdir -p /opt/springboot
+sudo mkdir -p /opt/springboot
 
 # JAR 이동
-cp /home/ec2-user/app/joyuri.jar /opt/springboot/joyuri.jar
+sudo cp /home/ec2-user/app/joyuri.jar /opt/springboot/joyuri.jar
 
 # systemd 서비스 등록
 cat <<EOF > /etc/systemd/system/springboot.service

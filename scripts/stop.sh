@@ -1,3 +1,3 @@
 #!/bin/bash
 echo "Stopping Spring Boot app..."
-systemctl stop springboot || true
+sudo systemctl stop springboot || true
