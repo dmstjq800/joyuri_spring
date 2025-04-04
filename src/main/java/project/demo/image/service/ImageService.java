@@ -15,16 +15,17 @@ public class ImageService {
     private String path;
     private final AlbumImageRepository albumImageRepository;
 
-    @Value("${image.upload-dir}")
+    @Value("${multipart.image.url}")
     String url;
 
-    public String ImageUpload(MultipartFile file, String path) {
+    public String ImageUpload(MultipartFile file, String path, long id) {
         String filePath = url.concat(path);
+        String name = path.replace("/", "");
 
         if(file.isEmpty()){return null;}
         try {
             String oriFilename = file.getOriginalFilename();
-            String newFilename = UUID.randomUUID().toString() + oriFilename.substring(oriFilename.lastIndexOf("."));
+            String newFilename = name + id + oriFilename.substring(oriFilename.lastIndexOf("."));
             File dest = new File(filePath + newFilename);
             file.transferTo(dest);
             return "/images/" + path + newFilename;

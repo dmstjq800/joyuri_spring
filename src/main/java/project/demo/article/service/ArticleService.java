@@ -55,7 +55,7 @@ public class ArticleService {
                 .build();
         articleRepository.save(article);
         if(image != null) {
-            String url = imageService.ImageUpload(image, "article/");
+            String url = imageService.ImageUpload(image, "article/", article.getId());
             ArticleImage articleImage = ArticleImage.builder().article(article).url(url).build();
             articleImageRepository.save(articleImage);
             article.getArticleImages().add(articleImage);
@@ -103,7 +103,7 @@ public class ArticleService {
         article.setTitle(articleDTO.getTitle());
         article.setContent(articleDTO.getContent());
         if(image != null) {
-            String url = imageService.ImageUpload(image, "article/");
+            String url = imageService.ImageUpload(image, "article/", article.getId());
             ArticleImage articleImage = articleImageRepository.findByArticle(article).orElse(null);
             if(articleImage == null) {
                 articleImage = ArticleImage.builder().article(article).url(url).build();

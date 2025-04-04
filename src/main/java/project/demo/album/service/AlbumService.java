@@ -44,7 +44,7 @@ public class AlbumService {
                 .build();
         albumRepository.save(album);
         if (image != null) {
-            String url = imageService.ImageUpload(image, "album/");
+            String url = imageService.ImageUpload(image, "album/", album.getId());
             AlbumImage albumImage = AlbumImage.builder().url(url).build();
             albumImageRepository.save(albumImage);
             album.getAlbumImages().add(albumImage);

@@ -55,7 +55,7 @@ public class AlbumInitService {
                 new Track("Hang On", "수록곡", "https://youtu.be/example15", loveAll),
                 new Track("Bruise", "수록곡", "https://youtu.be/example16", loveAll)
         ));
-        for (int i = 1 ; i < 4 ; i++) {
+        for (int i = 1 ; i < 5 ; i++) {
             AlbumImage albumImage = AlbumImage.builder()
                     .url("/images/album/album" + i + ".png").album(albumRepository.findById((long)i).orElse(null)).build();
             albumImageRepository.save(albumImage);

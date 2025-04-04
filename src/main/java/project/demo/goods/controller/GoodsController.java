@@ -9,7 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.demo.article.dto.CommentDTO;
+import project.demo.goods.dto.GoodsAddDTO;
 import project.demo.goods.entity.Goods;
 import project.demo.goods.service.GoodsService;
 
@@ -27,14 +29,23 @@ public class GoodsController {
 
     /// List 반환
     @GetMapping("/list")
-    public ResponseEntity<?> getGoodsList2(@RequestParam(value = "sort", defaultValue = "last") String sort,
+    public ResponseEntity<?> getGoodsList(@RequestParam(value = "sort", defaultValue = "last") String sort,
                                           @RequestParam(value = "name", required = false) String name,
                                           @RequestParam(value = "page", defaultValue = "0") int page,
                                           @RequestParam(value = "size", defaultValue = "10") int size) {
-
         Pageable pageable = PageRequest.of(page, size);
         return goodsService.getGoodsList(name, sort, pageable);
     }
-
-
+    /// 굿즈 추가
+    @GetMapping("/add")
+    public String add(){
+        return "article/article";
+    }
+    @PostMapping("/add")
+    public ResponseEntity<?> addGoods(@RequestParam("name") String name,
+                                      @RequestParam("price")String price,
+                                      @RequestParam("description")String description,
+                                      @RequestParam("image") MultipartFile image) {
+        return goodsService.addGoods(name, description, Integer.parseInt(price), image);
+    }
 }

@@ -45,4 +45,5 @@ public class MemberController {
         return memberService.updatePassword(updatePasswordDTO);
     }
 
+
 }

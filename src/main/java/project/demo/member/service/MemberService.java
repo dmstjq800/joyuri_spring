@@ -31,6 +31,7 @@ import project.demo.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -161,6 +162,22 @@ public class MemberService implements UserDetailsService {
                 .emailToken("JJoYul")
                 .RefreshToken(null).build();
         memberRepository.save(member);
+        member = Member.builder().username("admin2@naver.com")
+                .password(passwordEncoder.encode("admin"))
+                .nickname("user")
+                .enabled(true)
+                .roles(List.of("ROLE_USER"))
+                .emailToken("JJoYul")
+                .RefreshToken(null).build();
+        memberRepository.save(member);
+        member = Member.builder().username("admin3@naver.com")
+                .password(passwordEncoder.encode("admin"))
+                .nickname("artist")
+                .enabled(true)
+                .roles(List.of("ROLE_ARTIST"))
+                .emailToken("JJoYul")
+                .RefreshToken(null).build();
+        memberRepository.save(member);
     }
     /// 토큰저장
     public void saveTocken(String username, String token) {
@@ -173,5 +190,10 @@ public class MemberService implements UserDetailsService {
     public String getRefreshToken(String username) {
         Member member = memberRepository.findByUsername(username).orElse(null);
         return member.getRefreshToken();
+    }
+
+    public ResponseEntity<?> getUserList() {
+        List<MemberResponseDTO> memberResponseDTOList = memberRepository.findAll().stream().map(MemberResponseDTO::new).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(memberResponseDTOList);
     }
 }

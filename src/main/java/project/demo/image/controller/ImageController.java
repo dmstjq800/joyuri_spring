@@ -33,8 +33,9 @@ public class ImageController {
     @ResponseBody
     public ResponseEntity<?> FileUpload(@RequestParam("file") MultipartFile file) {
 
-        String url = imageService.ImageUpload(file, "album/");
+
         Album album = Album.builder().title("hi").description("hi2").albumImages(new ArrayList<>()).build();
+        String url = imageService.ImageUpload(file, "album/", album.getId());
         albumRepository.save(album);
         AlbumImage albumImage = AlbumImage.builder().album(album).url(url).build();
         albumImageRepository.save(albumImage);

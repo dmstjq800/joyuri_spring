@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeHttpRequests((authrize) -> authrize
-                       // .requestMatchers("/home").authenticated()
+                        .requestMatchers("/admin/*").hasRole("ADMIN")
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session -> session
@@ -59,10 +59,11 @@ public class SecurityConfig {
 
     @Value("${frontend-url}")
     private String frontendUrl;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOriginPattern(frontendUrl);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 쿠키 허용
