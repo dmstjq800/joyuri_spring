@@ -47,11 +47,12 @@ public class ArticleService {
 
     /// 게시글 생성
     @Transactional
-    public ResponseEntity<String> createArticle(ArticleDTO articleDTO, String nickname, MultipartFile image) {
+    public ResponseEntity<String> createArticle(String title, String content, MultipartFile image) {
+        if(!memberService.isLogined()) return ResponseEntity.badRequest().body("required Login");
         Article article = Article.builder()
-                .title(articleDTO.getTitle())
-                .content(articleDTO.getContent())
-                .author(nickname)
+                .title(title)
+                .content(content)
+                .author(memberService.getCurrentNickname())
                 .build();
         articleRepository.save(article);
         if(image != null) {
@@ -64,10 +65,9 @@ public class ArticleService {
     }
     /// 게시글 삭제
     @Transactional
-    public ResponseEntity<String> deleteArticle(long id, String nickname) {
+    public ResponseEntity<String> deleteArticle(long id) {
         Article article = articleRepository.findById(id).orElse(null);
-        if(article == null) ResponseEntity.noContent().build();
-        if(!article.getAuthor().equals(nickname)) {return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized");}
+        if(article == null) return ResponseEntity.noContent().build();
         articleRepository.delete(article);
         return ResponseEntity.ok("success");
     }
@@ -76,7 +76,6 @@ public class ArticleService {
         Article article = articleRepository.findById(id).orElse(null);
         if(article==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
         boolean liked = articleLikeService.liked(article);
-
         List<CommentDTO> commentDTOList = commentService.getCommentList(id);
         return ResponseEntity.ok(new ArticleDetailDTO(article, commentDTOList, liked));
     }

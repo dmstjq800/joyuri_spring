@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.article.dto.CommentDTO;
@@ -42,6 +43,7 @@ public class GoodsController {
         return "article/article";
     }
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<?> addGoods(@RequestParam("name") String name,
                                       @RequestParam("price")String price,
                                       @RequestParam("description")String description,

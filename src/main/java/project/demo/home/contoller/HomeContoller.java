@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import project.demo.member.dto.MemberResponseDTO;
+import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
 
 
@@ -19,12 +20,8 @@ public class HomeContoller {
 
     @GetMapping("/home")
     public ResponseEntity<?> HomeContoller() {
-        MemberResponseDTO memberResponseDTO = memberService.getMemberResponseDTO();
-        return ResponseEntity.ok(memberResponseDTO);
-    }
-    @GetMapping("/home2")
-    public ResponseEntity<?> HomeContoller2() {
-
-        return ResponseEntity.ok("HI");
+        Member member = memberService.getCurrentMember();
+        if(member == null) return null;
+        return ResponseEntity.ok(new MemberResponseDTO(member));
     }
 }

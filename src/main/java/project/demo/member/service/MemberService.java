@@ -23,12 +23,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import project.demo.admin.dto.RoleDTO;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.dto.MemberResponseDTO;
 import project.demo.member.dto.UpdatePasswordDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.repository.MemberRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -70,6 +73,7 @@ public class MemberService implements UserDetailsService {
                 .nickname(nickname)
                 .roles(List.of("ROLE_USER"))
                 .emailToken(UUID.randomUUID().toString())
+                .emailTokenExpiry(LocalDateTime.now().plusMinutes(10))
                 .enabled(false)
                 .build();
         memberRepository.save(member);
@@ -99,11 +103,16 @@ public class MemberService implements UserDetailsService {
         public ResponseEntity<?> verifyEmail(String token){
             Member member = memberRepository.findByEmailToken(token).orElse(null);
             if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
-            if(member.isEnabled()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("allready enabled");
+            if(member.getEmailTokenExpiry().isBefore(LocalDateTime.now())) {
+                memberRepository.delete(member);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("email token expired");
+            }
+            if(member.isEnabled()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already enabled");
             member.setEnabled(true);
             member.setEmailToken(null);
+            member.setEmailTokenExpiry(null);
             memberRepository.save(member);
-            return ResponseEntity.status(HttpStatus.OK).body("success, please verify your email");
+            return ResponseEntity.status(HttpStatus.OK).body("success");
         }
     /// 현재 유저 email
     public String getCurrentUsername() {
@@ -118,18 +127,16 @@ public class MemberService implements UserDetailsService {
         String username = getCurrentUsername();
         return username != null;
     }
+    /// 현재 멤버
+    public Member getCurrentMember() {
+        return memberRepository.findByNickname(getCurrentNickname()).orElse(null);
+    }
     /// 현재 유저 닉네임
     public String getCurrentNickname() {
             Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
             if(member == null) return null;
             return member.getNickname();
         }
-        /// 유저 email nickname
-    public MemberResponseDTO getMemberResponseDTO() {
-        Member member = findByusername(getCurrentUsername());
-        if(member == null) return null;
-        return new MemberResponseDTO(member);
-    }
     /// 닉네임 변경
     public ResponseEntity<?> updateNickname(MemberDTO memberDTO) {
         Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
@@ -187,13 +194,24 @@ public class MemberService implements UserDetailsService {
             memberRepository.save(member);
         }
     }
+    /// 리프레시 토큰
     public String getRefreshToken(String username) {
         Member member = memberRepository.findByUsername(username).orElse(null);
         return member.getRefreshToken();
     }
 
+    /// admin전용
     public ResponseEntity<?> getUserList() {
         List<MemberResponseDTO> memberResponseDTOList = memberRepository.findAll().stream().map(MemberResponseDTO::new).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDTOList);
     }
+    /// admin 전용
+    public ResponseEntity<?> addRole(RoleDTO roleDTO) {
+        Member member = memberRepository.findByNickname(roleDTO.getNickname()).orElse(null);
+        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
+        member.setRoles(roleDTO.getRoles());
+        memberRepository.save(member);
+        return ResponseEntity.status(HttpStatus.OK).body("success");
+    }
+
 }

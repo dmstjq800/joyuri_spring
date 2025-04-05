@@ -28,15 +28,12 @@ public class CommetController {
     @PostMapping("/{id}/insertComment")
     public ResponseEntity<String> insertComment(@PathVariable String id, @RequestBody CommentDTO commentDTO) {
         if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
-        String nickname = memberService.getCurrentNickname();
-
-        return commentService.insertComment(Long.parseLong(id), commentDTO, nickname);
+        return commentService.insertComment(Long.parseLong(id), commentDTO);
     }
     /// 댓글 삭제
     @PostMapping("/deleteComment")
     public ResponseEntity<String> deleteCommnet(@RequestBody CommentDTO commentDTO) {
         if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
-
         return commentService.deleteCommnet(commentDTO);
     }
 
@@ -55,7 +52,6 @@ public class CommetController {
     @PostMapping("/insertChildren")
     public ResponseEntity<String> insertChildren(@RequestBody CommentDTO commentDTO) {
         if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
-
         return commentService.insertChildren(commentDTO);
     }
 

@@ -30,7 +30,10 @@ public class Comment {
 
     @Lob
     private String content;
-    private String author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private Member author;
 
 
     @ManyToOne

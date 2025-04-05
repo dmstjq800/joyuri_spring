@@ -25,7 +25,7 @@ public class CommentDTO {
 
     public CommentDTO(Comment comment){
         this.id = comment.getId();
-        this.author = comment.getAuthor();
+        this.author = comment.getAuthor().getNickname();
         this.content = comment.getContent();
         this.createDate = comment.getCreateDate();
         this.children = comment.getChildren().size();

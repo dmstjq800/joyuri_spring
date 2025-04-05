@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,11 +42,11 @@ public class ArticleController {
 
     /// 게시글 작성
     @PostMapping("/write")
-    public ResponseEntity<String> writeArticle(@RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
-        /// image가 null로 올지 비어있는 상태로 올지 확인필요
-        if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
-        if(articleDTO.getTitle().isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
-        return articleService.createArticle(articleDTO, memberService.getCurrentNickname(), image);
+    public ResponseEntity<String> writeArticle(@RequestParam("title") String title,
+                                               @RequestParam("content") String content,
+                                               @RequestParam(value = "image", required = false) MultipartFile image) {
+        if(title == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("title is empty");
+        return articleService.createArticle(title, content,  image);
     }
     ///  게시글 조회
     @GetMapping("/{id}")
@@ -56,12 +57,13 @@ public class ArticleController {
 
     /// 게시글 삭제
     @PostMapping("/{id}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<String> deleteArticle(@PathVariable String id) {
-        String nickname = memberService.getCurrentNickname();
-        return articleService.deleteArticle(Long.parseLong(id), nickname);
+        return articleService.deleteArticle(Long.parseLong(id));
     }
     /// 게시글 리스트
     @GetMapping("/listtest")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<List<ArticleListDTO>> listArticle() {
         return ResponseEntity.ok(articleService.getArticlelist());
     }
@@ -77,6 +79,7 @@ public class ArticleController {
     }
     /// 게시글 수정
     @PostMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<String> editArticle(@PathVariable String id, @RequestBody ArticleDTO articleDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
         return articleService.editAticle(Long.parseLong(id), articleDTO, image);
     }

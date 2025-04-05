@@ -11,6 +11,7 @@ import project.demo.article.entity.Article;
 import project.demo.article.entity.Comment;
 import project.demo.article.repository.ArticleRepository;
 import project.demo.article.repository.CommentRepository;
+import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
 
 
@@ -27,13 +28,15 @@ public class CommentService {
 
     /// 댓글 작성
     @Transactional
-    public ResponseEntity<String> insertComment(long id, CommentDTO commentDTO, String nickname) {
+    public ResponseEntity<String> insertComment(long id, CommentDTO commentDTO) {
         Article article = articleRepository.findById(id).orElse(null);
         if (article == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).build();}
+        Member member = memberService.getCurrentMember();
+        if (member == null) {return ResponseEntity.status(HttpStatus.FORBIDDEN).build();}
         Comment comment = Comment.builder()
                 .article(article)
                 .content(commentDTO.getContent())
-                .author(nickname)
+                .author(member)
                 .build();
         commentRepository.save(comment);
         return ResponseEntity.ok("success");
@@ -41,12 +44,11 @@ public class CommentService {
     /// 댓글 삭제
     @Transactional
     public ResponseEntity<String> deleteCommnet(CommentDTO commentDTO) {
-        String nickname = memberService.getCurrentNickname();
+        Member member = memberService.getCurrentMember();
         Comment comment = commentRepository.findById(commentDTO.getId()).orElse(null);
         if(comment == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("commnet not found");
-        if(!comment.getAuthor().equals(nickname)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("different author");
+        if(!comment.getAuthor().equals(member) && !member.getRoles().contains("ROLE_ADMIN")) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized");
         commentRepository.delete(comment);
-
         return ResponseEntity.ok("success");
     }
     /// 댓글 DTO
@@ -64,11 +66,12 @@ public class CommentService {
         if(parent == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("parent not found");
         if(parent.getParent() != null) return ResponseEntity.status(HttpStatus.CONFLICT).body("This is child of comment, number is " + parent.getId());
         Article article = parent.getArticle();
-        String nickname = memberService.getCurrentNickname();
+        Member member = memberService.getCurrentMember();
+        if(member == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         Comment children = Comment.builder()
                 .parent(parent)
                 .content(commentDTO.getContent())
-                .author(nickname)
+                .author(member)
                 .article(article)
                 .build();
         commentRepository.save(children);

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.album.dto.AlbumDTO;
@@ -23,8 +24,8 @@ public class AlbumController {
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
-
         if (albumDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
         //if(image.isEmpty()) image = null;
         return albumService.addAlbum(albumDTO, image);
