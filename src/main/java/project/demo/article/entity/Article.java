@@ -52,7 +52,7 @@ public class Article {
     private List<ArticleImage> articleImages = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comment = new ArrayList<>();
 
     private long likes;

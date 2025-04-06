@@ -19,6 +19,7 @@ import project.demo.member.dto.AuthResponse;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
+import project.demo.security.exeption.customexception.UnauthorizedException;
 import project.demo.security.jwt.JWTutil;
 
 @RestController
@@ -38,7 +39,7 @@ public class AuthController {
         }catch (UsernameNotFoundException | BadCredentialsException e){
             throw new Exception("사용자 정보 불일치", e);
         } catch (DisabledException e) {
-            return ResponseEntity.status(488).build();
+            return ResponseEntity.status(488).body("E-mail 인증 실패");
         } catch (Exception e){
             throw new Exception("로그인 실패", e);
         }
@@ -56,11 +57,13 @@ public class AuthController {
     public ResponseEntity<?> createRefreshToken(@RequestBody MemberDTO memberDTO) throws Exception {
         Member member = memberService.findByusername(memberDTO.getUsername());
         String refreshToken = memberService.getRefreshToken(member.getUsername());
-
-        if(refreshToken == null || jwtUtil.isTokenExpired(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Refresh Token Expired");
+        String OldToken = memberDTO.getToken();
+        if(!member.equals(memberService.findByusername(jwtUtil.extractUsernameEvenIfExpired(OldToken)))) {
+            throw new UnauthorizedException("not matched");
         }
-
+        if(refreshToken == null || jwtUtil.isTokenExpired(refreshToken)) {
+            throw new BadCredentialsException("refresh token expired");
+        }
 
         String jwt = jwtUtil.generateToken(member);
         return ResponseEntity.ok(new AuthResponse(jwt, member));

@@ -24,8 +24,8 @@ public class GoodsController {
 
     /// 상세
     @GetMapping("/{id}")
-    public ResponseEntity<?> getComment(@PathVariable String id) {
-        return goodsService.findById(Long.parseLong(id));
+    public ResponseEntity<?> getComment(@PathVariable long id) {
+        return ResponseEntity.ok(goodsService.findById(id));
     }
 
     /// List 반환
@@ -35,7 +35,7 @@ public class GoodsController {
                                           @RequestParam(value = "page", defaultValue = "0") int page,
                                           @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return goodsService.getGoodsList(name, sort, pageable);
+        return ResponseEntity.ok(goodsService.getGoodsList(name, sort, pageable));
     }
     /// 굿즈 추가
     @GetMapping("/add")
@@ -45,9 +45,10 @@ public class GoodsController {
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<?> addGoods(@RequestParam("name") String name,
-                                      @RequestParam("price")String price,
+                                      @RequestParam("price")int price,
                                       @RequestParam("description")String description,
                                       @RequestParam("image") MultipartFile image) {
-        return goodsService.addGoods(name, description, Integer.parseInt(price), image);
+        Goods goods = goodsService.addGoods(name, description, price, image);
+        return ResponseEntity.ok(goods);
     }
 }

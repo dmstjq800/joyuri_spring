@@ -22,6 +22,7 @@ import project.demo.goods.entity.GoodsImage;
 import project.demo.goods.repository.GoodsImageRepository;
 import project.demo.goods.repository.GoodsRepository;
 import project.demo.image.service.ImageService;
+import project.demo.security.exeption.customexception.NotFoundException;
 
 
 import java.util.ArrayList;
@@ -34,28 +35,25 @@ public class GoodsService {
     private final GoodsImageRepository goodsImageRepository;
     private final ImageService imageService;
 
-    public ResponseEntity<?> findById(long id) {
-        return ResponseEntity.ok(goodsRepository.findById(id));
+    public Goods findById(long id) {
+        return goodsRepository.findById(id).orElseThrow(() -> new NotFoundException("goods not found"));
     }
 
-    public ResponseEntity<?> getGoodsList(String name, String sort, Pageable pageable) {
+    public Page<Goods> getGoodsList(String name, String sort, Pageable pageable) {
+        Page<Goods> goodsPage;
+        if (sort != null && sort.equalsIgnoreCase("asc")) {
+            goodsPage = goodsRepository.findByGoodsNameContainingIgnoreCaseOrderByPriceAsc(name, pageable);
 
-        if (name != null) {
-            // 이름으로 검색
-            if (sort != null && sort.equalsIgnoreCase("asc")) {
-                Page<Goods> goodsPage = goodsRepository.findByGoodsNameContainingIgnoreCaseOrderByPriceAsc(name, pageable);
-                return ResponseEntity.ok(goodsPage);
-            } else if (sort != null && sort.equalsIgnoreCase("desc")) {
-                Page<Goods> goodsPage = goodsRepository.findByGoodsNameContainingIgnoreCaseOrderByPriceDesc(name, pageable);
-                return ResponseEntity.ok(goodsPage);
-            } else {
-                Page<Goods> goodsPage = goodsRepository.findByGoodsNameContainingOrderByIdDesc(name, pageable);
-                return ResponseEntity.ok(goodsPage);
-            }
-        } else return ResponseEntity.notFound().build();
+        } else if (sort != null && sort.equalsIgnoreCase("desc")) {
+            goodsPage = goodsRepository.findByGoodsNameContainingIgnoreCaseOrderByPriceDesc(name, pageable);
+
+        } else {
+            goodsPage = goodsRepository.findByGoodsNameContainingOrderByIdDesc(name, pageable);
+        }
+        return goodsPage;
     }
 
-    public ResponseEntity<?> addGoods(String name, String description, int price, MultipartFile image) {
+    public Goods addGoods(String name, String description, int price, MultipartFile image) {
         Goods goods = Goods.builder()
                 .goodsName(name)
                 .description(description)
@@ -68,6 +66,6 @@ public class GoodsService {
             GoodsImage goodsImage = GoodsImage.builder().goods(goods).url(url).build();
             goodsImageRepository.save(goodsImage);
         }
-        return ResponseEntity.ok().build();
+        return goods;
     }
 }

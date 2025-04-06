@@ -16,6 +16,6 @@ public class CareerController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getCareerList() {
-        return careerService.getList();
+        return ResponseEntity.ok(careerService.getList());
     }
 }

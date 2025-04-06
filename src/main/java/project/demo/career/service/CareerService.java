@@ -20,9 +20,8 @@ import java.util.List;
 public class CareerService {
     private final CareerRepository careerRepository;
     private final CareerImageRepository careerImageRepository;
-    public ResponseEntity<?> getList() {
-        List<Career> careerList = careerRepository.findAllByOrderByIdDesc();
-        return ResponseEntity.ok(careerList);
+    public List<Career> getList() {
+        return careerRepository.findAllByOrderByIdDesc();
     }
 
 

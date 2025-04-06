@@ -29,6 +29,10 @@ import project.demo.member.dto.MemberResponseDTO;
 import project.demo.member.dto.UpdatePasswordDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.repository.MemberRepository;
+import project.demo.security.exeption.customexception.BadRequestException;
+import project.demo.security.exeption.customexception.ConflictException;
+import project.demo.security.exeption.customexception.ForbiddenException;
+import project.demo.security.exeption.customexception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,17 +64,18 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByUsername(username).orElse(null);
     }
     /// 유저 생성
-    public ResponseEntity<String> createMember(String username, String password, String nickname) throws MessagingException {
+    public Member createMember(MemberDTO memberDTO) throws MessagingException {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        if(memberRepository.findByUsername(username).isPresent())
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("exist");
-
-        password = passwordEncoder.encode(password);
+        if(memberRepository.findByUsername(memberDTO.getUsername()).isPresent())
+            throw new ConflictException("존재하는 e-mail");
+        if(memberRepository.findByNickname(memberDTO.getNickname()).isPresent())
+            throw new ConflictException("존재하는 nickname");
+        String password = passwordEncoder.encode(memberDTO.getPassword());
         Member member = Member.builder()
-                .username(username)
+                .username(memberDTO.getUsername())
                 .password(password)
-                .nickname(nickname)
+                .nickname(memberDTO.getNickname())
                 .roles(List.of("ROLE_USER"))
                 .emailToken(UUID.randomUUID().toString())
                 .emailTokenExpiry(LocalDateTime.now().plusMinutes(10))
@@ -78,7 +83,7 @@ public class MemberService implements UserDetailsService {
                 .build();
         memberRepository.save(member);
         sendEmail(member);
-        return ResponseEntity.status(HttpStatus.CREATED).body("success");
+        return member;
     }
     /// 이메일 전송
         public void sendEmail(Member member) throws MessagingException {
@@ -100,19 +105,18 @@ public class MemberService implements UserDetailsService {
             mailSender.send(message);
         }
     /// 이메일 인증
-        public ResponseEntity<?> verifyEmail(String token){
-            Member member = memberRepository.findByEmailToken(token).orElse(null);
-            if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
+        public Member verifyEmail(String token){
+            Member member = memberRepository.findByEmailToken(token).orElseThrow(() -> new NotFoundException("user not found"));
             if(member.getEmailTokenExpiry().isBefore(LocalDateTime.now())) {
                 memberRepository.delete(member);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("email token expired");
+                throw new BadRequestException("email token expired");
             }
-            if(member.isEnabled()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already enabled");
+            if(member.isEnabled()) throw new BadRequestException("already enabled");
             member.setEnabled(true);
             member.setEmailToken(null);
             member.setEmailTokenExpiry(null);
             memberRepository.save(member);
-            return ResponseEntity.status(HttpStatus.OK).body("success");
+            return member;
         }
     /// 현재 유저 email
     public String getCurrentUsername() {
@@ -138,24 +142,25 @@ public class MemberService implements UserDetailsService {
             return member.getNickname();
         }
     /// 닉네임 변경
-    public ResponseEntity<?> updateNickname(MemberDTO memberDTO) {
-        Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
-        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
+    public Member updateNickname(MemberDTO memberDTO) {
+        Member member = memberRepository.findByUsername(getCurrentUsername()).orElseThrow(() -> new NotFoundException("user not found"));
         member.setNickname(memberDTO.getNickname());
         memberRepository.save(member);
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        return member;
     }
     /// 비밀번호 변경
-    public ResponseEntity<?> updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+    public Member updatePassword(UpdatePasswordDTO updatePasswordDTO) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Member member = memberRepository.findByUsername(getCurrentUsername()).orElse(null);
-        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
+        Member member = memberRepository.findByUsername(getCurrentUsername()).orElseThrow(() -> new NotFoundException("user not found"));
         if(!passwordEncoder.matches(updatePasswordDTO.getOldPassword(), member.getPassword())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not match");
+            throw new ForbiddenException("not match");
+        }
+        if(updatePasswordDTO.getOldPassword().equals(updatePasswordDTO.getNewPassword())){
+            throw new ConflictException("same password");
         }
         member.setPassword(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
         memberRepository.save(member);
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        return member;
     }
     /// admin 생성 ///
     @EventListener(ApplicationReadyEvent.class)
@@ -166,22 +171,6 @@ public class MemberService implements UserDetailsService {
                 .nickname("administrator")
                 .enabled(true)
                 .roles(List.of("ROLE_ADMIN"))
-                .emailToken("JJoYul")
-                .RefreshToken(null).build();
-        memberRepository.save(member);
-        member = Member.builder().username("admin2@naver.com")
-                .password(passwordEncoder.encode("admin"))
-                .nickname("user")
-                .enabled(true)
-                .roles(List.of("ROLE_USER"))
-                .emailToken("JJoYul")
-                .RefreshToken(null).build();
-        memberRepository.save(member);
-        member = Member.builder().username("admin3@naver.com")
-                .password(passwordEncoder.encode("admin"))
-                .nickname("artist")
-                .enabled(true)
-                .roles(List.of("ROLE_ARTIST"))
                 .emailToken("JJoYul")
                 .RefreshToken(null).build();
         memberRepository.save(member);
