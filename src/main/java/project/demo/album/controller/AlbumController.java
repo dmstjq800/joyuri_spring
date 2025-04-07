@@ -34,8 +34,6 @@ public class AlbumController {
     ///
     @GetMapping("/list")
     public ResponseEntity<?> getAlbumList() {
-
-
         return albumService.getAlbumList();
     }
 

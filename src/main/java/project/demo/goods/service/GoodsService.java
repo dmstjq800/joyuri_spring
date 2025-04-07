@@ -38,7 +38,7 @@ public class GoodsService {
     public Goods findById(long id) {
         return goodsRepository.findById(id).orElseThrow(() -> new NotFoundException("goods not found"));
     }
-
+    /// 굿즈 페이지 리스트
     public Page<Goods> getGoodsList(String name, String sort, Pageable pageable) {
         Page<Goods> goodsPage;
         if (sort != null && sort.equalsIgnoreCase("asc")) {
@@ -52,7 +52,7 @@ public class GoodsService {
         }
         return goodsPage;
     }
-
+    ///  굿즈 추가
     public Goods addGoods(String name, String description, int price, MultipartFile image) {
         Goods goods = Goods.builder()
                 .goodsName(name)

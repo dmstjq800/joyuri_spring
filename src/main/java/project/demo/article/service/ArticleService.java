@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import project.demo.article.dto.ArticleRequestDTO;
-import project.demo.article.dto.ArticleDetailDTO;
-import project.demo.article.dto.ArticleListDTO;
-import project.demo.article.dto.CommentDTO;
+import project.demo.article.dto.*;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.ArticleImage;
 import project.demo.article.repository.ArticleImageRepository;
@@ -71,11 +68,7 @@ public class ArticleService {
         List<CommentDTO> commentDTOList = commentService.getCommentList(id);
         return new ArticleDetailDTO(article, commentDTOList, liked);
     }
-    /// 게시글 ListDTO 반환 ///
-    public List<ArticleListDTO> getArticlelist() {
-        List<Article> articles = articleRepository.findAllByOrderByIdDesc();
-        return articles.stream().map(ArticleListDTO::new).collect(Collectors.toList());
-    }
+
     public Article findById(long id) {
         return articleRepository.findById(id).orElse(null);
     }
@@ -104,11 +97,11 @@ public class ArticleService {
         return articles.stream().map(ArticleListDTO::new).collect(Collectors.toList());
     }
     /// 페이징 조회
-    public List<ArticleListDTO> getArticlesPerPage(int page, int size) {
+    public ArticlePageDTO getArticlesPerPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Article> articlePage = articleRepository.findAll(pageable);
-        List<Article> articles = articlePage.getContent();
-        return articles.stream().map(ArticleListDTO::new).collect(Collectors.toList());
+        List<ArticleListDTO> articlelist = articlePage.getContent().stream().map(ArticleListDTO::new).collect(Collectors.toList());
+        return new ArticlePageDTO(articlePage, articlelist);
     }
 
 }

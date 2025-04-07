@@ -22,12 +22,7 @@ public class ArticleQueryController {
         ArticleDetailDTO articleDetailDTO = articleService.getArticleDetail(id);
         return ResponseEntity.ok(articleDetailDTO);
     }
-    /// 게시글 리스트
-    @GetMapping("/listtest")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
-    public ResponseEntity<List<ArticleListDTO>> listArticle() {
-        return ResponseEntity.ok(articleService.getArticlelist());
-    }
+
     /// 게시글 상위 4개
     @GetMapping("/getfour")
     public ResponseEntity<?> getArticle4Entity(){

@@ -13,7 +13,7 @@ import project.demo.article.entity.Article;
 
 import project.demo.article.service.ArticleService;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/article")
 public class ArticleController {

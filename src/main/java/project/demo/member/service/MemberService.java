@@ -165,6 +165,7 @@ public class MemberService implements UserDetailsService {
     /// admin 생성 ///
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
+        if(memberRepository.count() > 0){ return;}
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Member member = Member.builder().username("admin@naver.com")
                 .password(passwordEncoder.encode("admin"))

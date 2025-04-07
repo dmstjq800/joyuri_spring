@@ -40,7 +40,7 @@ public class JWTutil {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
-    public String extractUsernameEvenIfExpired(String token) {
+    public String extractUsernameFromExpired(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(secret)

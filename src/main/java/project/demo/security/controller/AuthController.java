@@ -58,7 +58,7 @@ public class AuthController {
         Member member = memberService.findByusername(memberDTO.getUsername());
         String refreshToken = memberService.getRefreshToken(member.getUsername());
         String OldToken = memberDTO.getToken();
-        if(!member.equals(memberService.findByusername(jwtUtil.extractUsernameEvenIfExpired(OldToken)))) {
+        if(!member.equals(memberService.findByusername(jwtUtil.extractUsernameFromExpired(OldToken)))) {
             throw new UnauthorizedException("not matched");
         }
         if(refreshToken == null || jwtUtil.isTokenExpired(refreshToken)) {
