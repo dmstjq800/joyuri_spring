@@ -23,7 +23,7 @@ public class JWTutil {
     @Value("${jwt.secret}")
     private String secret;
     private long expiration = 1000000;
-    private long RefreshExpiration = 5000000;
+    private long RefreshExpiration = 8000000;
 
 
     public String extractUsername(String token) {

@@ -53,17 +53,41 @@ public class GoodsService {
         return goodsPage;
     }
     ///  굿즈 추가
-    public Goods addGoods(String name, String description, int price, MultipartFile image) {
+    public Goods addGoods(GoodsAddDTO goodsAddDTO, MultipartFile image) {
         Goods goods = Goods.builder()
-                .goodsName(name)
-                .description(description)
-                .price(price)
+                .goodsName(goodsAddDTO.getName())
+                .description(goodsAddDTO.getDescription())
+                .price(goodsAddDTO.getPrice())
                 .build();
         goodsRepository.save(goods);
         long id = goods.getId();
         if(image != null) {
             String url = imageService.ImageUpload(image, "goods/", id);
             GoodsImage goodsImage = GoodsImage.builder().goods(goods).url(url).build();
+            goodsImageRepository.save(goodsImage);
+        }
+        return goods;
+    }
+
+    public Goods deleteGoods(long id) {
+        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new NotFoundException("goods not found"));
+        goodsRepository.delete(goods);
+        return goods;
+    }
+
+    public Goods updateGoods(long id, GoodsAddDTO goodsAddDTO, MultipartFile image) {
+        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new NotFoundException("goods not found"));
+        goods.setGoodsName(goodsAddDTO.getName());
+        goods.setDescription(goodsAddDTO.getDescription());
+        goods.setPrice(goodsAddDTO.getPrice());
+        goodsRepository.save(goods);
+        if(image != null) {
+            String url = imageService.ImageUpload(image, "goods/", goods.getId());
+            GoodsImage goodsImage = goodsImageRepository.findByGoods(goods).orElse(null);
+            if(goodsImage == null){
+                goodsImage = GoodsImage.builder().goods(goods).url(url).build();
+            }
+            else goodsImage.setUrl(url);
             goodsImageRepository.save(goodsImage);
         }
         return goods;

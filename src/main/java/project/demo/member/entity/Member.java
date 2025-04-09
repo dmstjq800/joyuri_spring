@@ -32,12 +32,10 @@ public class Member implements UserDetails {
     @Id
     private long id;
 
-    @Email
+
     @Column(unique = true)
     private String username;
-
-    @NotBlank(message = "닉네임은 필수 항목입니다.")
-    @Size(min = 2, max = 30, message = "이름은 2자 이상 10자 이하로 입력해야 합니다.")
+    
     @Column(unique = true, nullable = false, length = 30)
     private String nickname;
 
@@ -60,9 +58,4 @@ public class Member implements UserDetails {
 
     @Column(columnDefinition = "TEXT")
     private String RefreshToken;
-
-
-
-
-
 }

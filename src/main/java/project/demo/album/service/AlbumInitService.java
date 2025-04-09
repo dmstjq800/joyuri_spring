@@ -33,32 +33,32 @@ public class AlbumInitService {
         Album loveAll = new Album("LOVE ALL", "조유리 두 번째 미니앨범", LocalDate.of(2023, 8, 9), "Mini");
         albumRepository.saveAll(List.of(glassy, major, minor, loveAll));
 
-        Album pickMeProd48 = new Album("PRODUCE 48 - 내꺼야 (PICK ME)", "Track: 내꺼야 (PICK ME)", LocalDate.of(2018, 5, 10), "Single");
-        Album toReachYouProd48 = new Album("PRODUCE 48 - 30 Girls 6 Concepts", "Track: 너에게 닿기를 (To reach you)", LocalDate.of(2018, 8, 18), "Single");
-        Album dreamingProd48 = new Album("PRODUCE 48 - FINAL", "Track: 꿈을 꾸는 동안 (IZ*ONE ver.)", LocalDate.of(2018, 9, 1), "Single");
+        Album pickMeProd48 = new Album("PRODUCE 48 - 내꺼야 (PICK ME)", "내꺼야 (PICK ME)", LocalDate.of(2018, 5, 10), "Single");
+        Album toReachYouProd48 = new Album("PRODUCE 48 - 30 Girls 6 Concepts", "너에게 닿기를 (To reach you)", LocalDate.of(2018, 8, 18), "Single");
+        Album dreamingProd48 = new Album("PRODUCE 48 - FINAL", "꿈을 꾸는 동안 (IZ*ONE ver.)", LocalDate.of(2018, 9, 1), "Single");
 
 
-        Album feverBasketOst = new Album("피버 바스켓 OST", "Track: FEVER", LocalDate.of(2019, 3, 5), "OST");
-        Album myLoveBrahmsOst = new Album("브람스를 좋아하세요? OST Part.7", "Track: My Love", LocalDate.of(2020, 9, 22), "OST");
-        Album storyOfUsMonthlyOst = new Album("월간 집 OST Part.2", "Track: STORY OF US", LocalDate.of(2021, 6, 24), "OST");
+        Album feverBasketOst = new Album("피버 바스켓 OST", "FEVER", LocalDate.of(2019, 3, 5), "OST");
+        Album myLoveBrahmsOst = new Album("브람스를 좋아하세요? OST Part.7", "My Love", LocalDate.of(2020, 9, 22), "OST");
+        Album storyOfUsMonthlyOst = new Album("월간 집 OST Part.2", "STORY OF US", LocalDate.of(2021, 6, 24), "OST");
 
 
-        Album maybeUniverse = new Album("모를 수도 있지만 (Maybe)", "Track: 모를 수도 있지만 (Maybe) - UNIVERSE MUSIC", LocalDate.of(2022, 8, 11), "Single");
-        Album lawCafeOst = new Album("법대로 사랑하라 OST Part.2", "Track: 내 마음을 느끼나요", LocalDate.of(2022, 9, 13), "OST");
-        Album fabulousOst = new Album("더 패뷸러스 OST Part.2", "Track: Run (Female Ver.)", LocalDate.of(2022, 12, 23), "OST");
+        Album maybeUniverse = new Album("모를 수도 있지만 (Maybe)", "모를 수도 있지만 (Maybe) - UNIVERSE MUSIC", LocalDate.of(2022, 8, 11), "Single");
+        Album lawCafeOst = new Album("법대로 사랑하라 OST Part.2", "내 마음을 느끼나요", LocalDate.of(2022, 9, 13), "OST");
+        Album fabulousOst = new Album("더 패뷸러스 OST Part.2", "Run (Female Ver.)", LocalDate.of(2022, 12, 23), "OST");
 
-        Album workLaterOst = new Album("술꾼도시여자들2 OST Part.5", "Track: Drink it, Girls! (적셔!) (with 한선화, 정은지)", LocalDate.of(2023, 1, 6), "OST");
-        Album yellowCirclePepsi = new Album("Yellow Circle (2023 펩시 캠페인)", "Track: Yellow Circle (with 채수빈)", LocalDate.of(2023, 4, 13), "Single");
-        Album seeYou19thOst = new Album("이번 생도 잘 부탁해 OST Part.3", "Track: DOWN", LocalDate.of(2023, 7, 2), "OST");
+        Album workLaterOst = new Album("술꾼도시여자들2 OST Part.5", "Drink it, Girls! (적셔!) (with 한선화, 정은지)", LocalDate.of(2023, 1, 6), "OST");
+        Album yellowCirclePepsi = new Album("Yellow Circle (2023 펩시 캠페인)", "Yellow Circle (with 채수빈)", LocalDate.of(2023, 4, 13), "Single");
+        Album seeYou19thOst = new Album("이번 생도 잘 부탁해 OST Part.3", "DOWN", LocalDate.of(2023, 7, 2), "OST");
 
 
-        Album poemForYouRemake = new Album("재해석 Vol.1", "Track: 그대라는 시 (원곡 태연) - 리메이크", LocalDate.of(2023, 7, 5), "Single");
-        Album luvLuvLuvOst = new Album("소용없어 거짓말 OST Part.5", "Track: Luv Luv Luv (with 성한빈)", LocalDate.of(2023, 9, 5), "OST");
-        Album lostDreamsSwfOst = new Album("스트릿 우먼 파이터2 계급미션 OST", "Track: Lost Dreams", LocalDate.of(2023, 9, 6), "OST");
+        Album poemForYouRemake = new Album("재해석 Vol.1", "그대라는 시 (원곡 태연) - 리메이크", LocalDate.of(2023, 7, 5), "Single");
+        Album luvLuvLuvOst = new Album("소용없어 거짓말 OST Part.5", "Luv Luv Luv (with 성한빈)", LocalDate.of(2023, 9, 5), "OST");
+        Album lostDreamsSwfOst = new Album("스트릿 우먼 파이터2 계급미션 OST", "Lost Dreams", LocalDate.of(2023, 9, 6), "OST");
         Album suriya = new Album("술이야", "Track: 술이야 - 리메이크", LocalDate.of(2023, 10, 12), "Single");
 
-        Album myHighlightLoveSupremacyOst = new Album("여신강림 시즌1 OST Part.1", "Track: My Highlight", LocalDate.of(2024, 7, 24), "OST");
-        Album windBlowsJeongnyeonOst = new Album("정년이 OST Part.3", "Track: 봄날은 간다", LocalDate.of(2024, 10, 27), "OST");
+        Album myHighlightLoveSupremacyOst = new Album("여신강림 시즌1 OST Part.1", "My Highlight", LocalDate.of(2024, 7, 24), "OST");
+        Album windBlowsJeongnyeonOst = new Album("정년이 OST Part.3", "봄날은 간다", LocalDate.of(2024, 10, 27), "OST");
         albumRepository.saveAll(List.of(pickMeProd48, toReachYouProd48, dreamingProd48, feverBasketOst, maybeUniverse, myLoveBrahmsOst, storyOfUsMonthlyOst,
                 lawCafeOst, fabulousOst, workLaterOst, yellowCirclePepsi, seeYou19thOst, poemForYouRemake, luvLuvLuvOst, lostDreamsSwfOst, suriya,
                 myHighlightLoveSupremacyOst, windBlowsJeongnyeonOst));

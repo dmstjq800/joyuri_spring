@@ -29,7 +29,7 @@ public class CommetController {
         return ResponseEntity.ok("success : " + comment.getId());
     }
     /// 댓글 삭제
-    @PostMapping("/deleteComment")
+    @DeleteMapping("/deleteComment")
     public ResponseEntity<String> deleteCommnet(@RequestBody CommentDTO commentDTO) {
         if(!memberService.isLogined()) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
         Comment comment = commentService.deleteCommnet(commentDTO);

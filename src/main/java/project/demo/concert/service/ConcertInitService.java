@@ -50,7 +50,7 @@ public class ConcertInitService {
         concertsToSave.add(new Concert("2024 MAMA AWARDS", "교세라 돔 오사카", LocalDate.of(2024, 11, 22)));
         concertsToSave.add(new Concert("제9회 아시아 아티스트 어워즈", "태국 방콕 임팩트 챌린저 홀 1-2", LocalDate.of(2024, 12, 27)));
 
-        concertsToSave.add(new Concert("2025 JOYURI FAN-CON ‘Episode 25’", "블루스퀘어 SOL트래블홀(자세히)", LocalDate.of(2025, 4, 27)));
+        concertsToSave.add(new Concert("2025 JOYURI FAN-CON ‘Episode 25’", "블루스퀘어 SOL트래블홀", LocalDate.of(2025, 4, 27)));
         concertRepository.saveAll(concertsToSave);
 
     }

@@ -1,6 +1,7 @@
 package project.demo.security.controller;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jdk.jfr.Enabled;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import project.demo.member.dto.AuthResponse;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
+import project.demo.security.exeption.customexception.BadRequestException;
 import project.demo.security.exeption.customexception.UnauthorizedException;
 import project.demo.security.jwt.JWTutil;
 
@@ -37,7 +39,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(memberDTO.getUsername(), memberDTO.getPassword())
             );
         }catch (UsernameNotFoundException | BadCredentialsException e){
-            throw new Exception("사용자 정보 불일치", e);
+            throw new BadRequestException("사용자 정보 불일치 ");
         } catch (DisabledException e) {
             return ResponseEntity.status(488).body("E-mail 인증 실패");
         } catch (Exception e){
@@ -48,7 +50,7 @@ public class AuthController {
         final String jwt = jwtUtil.generateToken(member);
 
         final String refreshToken = jwtUtil.generateRefreshToken(jwt);
-        memberService.saveTocken(member.getUsername(), refreshToken);
+        memberService.saveToken(member.getUsername(), refreshToken);
 
         return ResponseEntity.ok(new AuthResponse(jwt, member));
     }
@@ -58,11 +60,15 @@ public class AuthController {
         Member member = memberService.findByusername(memberDTO.getUsername());
         String refreshToken = memberService.getRefreshToken(member.getUsername());
         String OldToken = memberDTO.getToken();
-        if(!member.equals(memberService.findByusername(jwtUtil.extractUsernameFromExpired(OldToken)))) {
-            throw new UnauthorizedException("not matched");
+        if(!memberDTO.getUsername().equals(jwtUtil.extractUsernameFromExpired(OldToken))) {
+            throw new UnauthorizedException(memberDTO.getUsername() + "  " + jwtUtil.extractUsernameFromExpired(OldToken));
         }
-        if(refreshToken == null || jwtUtil.isTokenExpired(refreshToken)) {
-            throw new BadCredentialsException("refresh token expired");
+        try{
+            if (refreshToken != null) {
+                jwtUtil.isTokenExpired(refreshToken);
+            }
+        }catch (ExpiredJwtException e){
+            throw new BadRequestException("refresh token expired, Please login again");
         }
 
         String jwt = jwtUtil.generateToken(member);

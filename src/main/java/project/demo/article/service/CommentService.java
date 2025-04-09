@@ -53,15 +53,6 @@ public class CommentService {
         commentRepository.delete(comment);
         return comment;
     }
-    /// 댓글 DTO
-    public List<CommentDTO> getCommentList(long id) {
-        List<Comment> commentList = commentRepository.findCommentByArticleIdAndParentIsNull(id).orElse(null);
-        List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(Comment comment : commentList) {
-            commentDTOList.add(new CommentDTO(comment));
-        }
-        return commentDTOList;
-    }
     /// 대댓글 작성
     public Comment insertChildren(CommentDTO commentDTO) {
         Comment parent = commentRepository.findById(commentDTO.getId()).orElseThrow(() -> new NotFoundException("Parent not found"));
@@ -77,7 +68,16 @@ public class CommentService {
         commentRepository.save(children);
         return children;
     }
-    /// 대댓글 DTO
+    /// 댓글 리스트
+    public List<CommentDTO> getCommentList(long id) {
+        List<Comment> commentList = commentRepository.findCommentByArticleId(id).orElse(null);
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        for(Comment comment : commentList) {
+            commentDTOList.add(new CommentDTO(comment));
+        }
+        return commentDTOList;
+    }
+    /// 대댓글 리스트
     public List<CommentDTO> findByParentId(long id) {
         List<Comment> comments = commentRepository.findByParentId(id).orElseThrow(() -> new NotFoundException("Comment not found"));
         return comments.stream().map(CommentDTO::new).collect(Collectors.toList());

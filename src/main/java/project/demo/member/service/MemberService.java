@@ -3,6 +3,7 @@ package project.demo.member.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.thymeleaf.context.Context;
 import project.demo.admin.dto.RoleDTO;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.dto.MemberResponseDTO;
+import project.demo.member.dto.UpdateNicknameDTO;
 import project.demo.member.dto.UpdatePasswordDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.repository.MemberRepository;
@@ -64,6 +66,7 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByUsername(username).orElse(null);
     }
     /// 유저 생성
+    @Transactional
     public Member createMember(MemberDTO memberDTO) throws MessagingException {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -142,9 +145,11 @@ public class MemberService implements UserDetailsService {
             return member.getNickname();
         }
     /// 닉네임 변경
-    public Member updateNickname(MemberDTO memberDTO) {
+    public Member updateNickname(UpdateNicknameDTO updateNicknameDTO) {
+
+        if(memberRepository.findByNickname(updateNicknameDTO.getNickname()).isPresent()) throw new ConflictException("nickname already exists");
         Member member = memberRepository.findByUsername(getCurrentUsername()).orElseThrow(() -> new NotFoundException("user not found"));
-        member.setNickname(memberDTO.getNickname());
+        member.setNickname(updateNicknameDTO.getNickname());
         memberRepository.save(member);
         return member;
     }
@@ -164,6 +169,7 @@ public class MemberService implements UserDetailsService {
     }
     /// admin 생성 ///
     @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void init(){
         if(memberRepository.count() > 0){ return;}
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -177,7 +183,7 @@ public class MemberService implements UserDetailsService {
         memberRepository.save(member);
     }
     /// 토큰저장
-    public void saveTocken(String username, String token) {
+    public void saveToken(String username, String token) {
         Member member = memberRepository.findByUsername(username).orElseThrow();
         if(member.getRefreshToken() == null || member.getRefreshToken().isEmpty()) {
             member.setRefreshToken(token);
@@ -196,11 +202,11 @@ public class MemberService implements UserDetailsService {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDTOList);
     }
     /// admin 전용
+    @Transactional
     public ResponseEntity<?> addRole(RoleDTO roleDTO) {
         Member member = memberRepository.findByNickname(roleDTO.getNickname()).orElse(null);
         if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
         member.setRoles(roleDTO.getRoles());
-        memberRepository.save(member);
         return ResponseEntity.status(HttpStatus.OK).body("success");
     }
 

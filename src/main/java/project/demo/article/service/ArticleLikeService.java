@@ -12,9 +12,10 @@ import project.demo.article.repository.ArticleRepository;
 import project.demo.member.entity.Member;
 import project.demo.member.repository.MemberRepository;
 import project.demo.member.service.MemberService;
+import project.demo.security.exeption.customexception.BadRequestException;
+import project.demo.security.exeption.customexception.UnauthorizedException;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ArticleLikeService {
     private final ArticleLikeRepository articleLikeRepository;
@@ -22,11 +23,12 @@ public class ArticleLikeService {
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
     /// 좋아요
+    @Transactional
     public ResponseEntity<?> like(long id) {
         Article article = articleRepository.findById(id).orElse(null);
-        if(article == null) return ResponseEntity.notFound().build();
+        if(article == null) throw new BadRequestException("article not found");
         Member member = memberService.findByusername(memberService.getCurrentUsername());
-        if(member == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("required login");
+        if(member == null) throw new UnauthorizedException("required login");
 
         ArticleLike articleLike = articleLikeRepository.findByArticleIdAndMemberId(id, member.getId()).orElse(null);
         if(articleLike == null) {
@@ -36,13 +38,11 @@ public class ArticleLikeService {
                     .build();
             article.setLikes(article.getLikes() + 1);
             articleLikeRepository.save(articleLike);
-            articleRepository.save(article);
             return ResponseEntity.ok("좋아요! 현재 좋아요 수: " + article.getLikes());
         }
         else{
             articleLikeRepository.delete(articleLike);
             article.setLikes(article.getLikes() - 1);
-            articleRepository.save(article);
             return ResponseEntity.ok("좋아요 취소, 현재 좋아요 수: " + article.getLikes());
         }
     }

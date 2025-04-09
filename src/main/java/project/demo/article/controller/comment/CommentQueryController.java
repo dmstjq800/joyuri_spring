@@ -17,14 +17,15 @@ import java.util.List;
 @RequestMapping("/article")
 @RequiredArgsConstructor
 public class CommentQueryController {
-    private CommentService commentService;
-    private ArticleService articleService;
+    private final CommentService commentService;
+    private final ArticleService articleService;
 
     /// 댓글 리스트
     @GetMapping("/{id}/commentList")
-    public ResponseEntity<List<CommentDTO>> commentList(@PathVariable long id) {
-        if(articleService.findById(id) == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(commentService.getCommentList(id));
+    public ResponseEntity<List<CommentDTO>> commentList(@PathVariable String id) {
+
+        if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(commentService.getCommentList(Long.parseLong(id)));
     }
     /// 대댓글 리스트
     @GetMapping("/getChild")

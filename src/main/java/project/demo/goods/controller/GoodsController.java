@@ -44,11 +44,25 @@ public class GoodsController {
     }
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
-    public ResponseEntity<?> addGoods(@RequestParam("name") String name,
-                                      @RequestParam("price")int price,
-                                      @RequestParam("description")String description,
+    public ResponseEntity<?> addGoods(GoodsAddDTO goodsAddDTO,
                                       @RequestParam("image") MultipartFile image) {
-        Goods goods = goodsService.addGoods(name, description, price, image);
+        Goods goods = goodsService.addGoods(goodsAddDTO, image);
         return ResponseEntity.ok(goods);
     }
+    /// 굿즈 삭제
+    @DeleteMapping("/{id}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
+    public ResponseEntity<?> deleteGoods(@PathVariable long id) {
+        Goods goods = goodsService.deleteGoods(id);
+        return ResponseEntity.ok(goods.getId());
+    }
+    /// 굿즈 수정
+    @PostMapping("/{id}/update")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
+    public ResponseEntity<?> updateGoods(@PathVariable long id, GoodsAddDTO goodsAddDTO,
+                                         @RequestParam("image") MultipartFile image) {
+        Goods goods = goodsService.updateGoods(id, goodsAddDTO, image);
+        return ResponseEntity.ok(goods.getId());
+    }
+
 }

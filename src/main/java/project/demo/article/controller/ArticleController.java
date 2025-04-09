@@ -25,23 +25,22 @@ public class ArticleController {
     }
     /// 게시글 작성
     @PostMapping("/write")
-    public ResponseEntity<?> writeArticle(@RequestParam("title") String title,
-                                               @RequestParam("content") String content,
+    public ResponseEntity<?> writeArticle(ArticleRequestDTO articleRequestDTO,
                                                @RequestParam(value = "image", required = false) MultipartFile image) {
-        Article article = articleService.createArticle(title, content, image);
+        Article article = articleService.createArticle(articleRequestDTO, image);
         return ResponseEntity.ok("success : " + article.getId());
     }
     /// 게시글 삭제
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
-    public ResponseEntity<String> deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<String> deleteArticle(@PathVariable long id) {
         Article article = articleService.deleteArticle(id);
         return ResponseEntity.ok("success : " + article.getId());
     }
     /// 게시글 수정
-    @PostMapping("/{id}/edit")
+    @PostMapping("/{id}/update")
     @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
-    public ResponseEntity<String> editArticle(@PathVariable Long id, @RequestBody ArticleRequestDTO articleRequestDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<String> editArticle(@PathVariable long id, ArticleRequestDTO articleRequestDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
         Article article = articleService.editArticle(id, articleRequestDTO, image);
         return ResponseEntity.ok("success : " + article.getId());
     }

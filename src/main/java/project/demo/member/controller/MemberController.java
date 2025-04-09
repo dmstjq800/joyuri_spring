@@ -2,12 +2,13 @@ package project.demo.member.controller;
 
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.demo.member.dto.MemberDTO;
 import project.demo.member.dto.UpdatePasswordDTO;
+import project.demo.member.dto.UpdateNicknameDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
 
@@ -21,7 +22,7 @@ public class MemberController {
 
     /// 회원가입
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody MemberDTO memberDTO) throws MessagingException {
+    public ResponseEntity<String> join(@Valid @RequestBody MemberDTO memberDTO) throws MessagingException {
         Member member = memberService.createMember(memberDTO);
         return ResponseEntity.ok("Member joined successfully : " + member.getUsername());
     }
@@ -33,13 +34,13 @@ public class MemberController {
     }
     /// 닉네임 수정
     @PostMapping("/updateNickname")
-    public ResponseEntity<?> updateNickname(@RequestBody MemberDTO memberDTO) {
-        Member member = memberService.updateNickname(memberDTO);
+    public ResponseEntity<?> updateNickname(@Valid @RequestBody UpdateNicknameDTO updateNicknameDTO) {
+        Member member = memberService.updateNickname(updateNicknameDTO);
         return ResponseEntity.ok("Nickname updated successfully : " + member.getNickname());
     }
     /// 비밀번호 변경
     @PostMapping("/updatePassword")
-    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO) {
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         Member member = memberService.updatePassword(updatePasswordDTO);
         return ResponseEntity.ok("Password updated successfully : " + member.getUsername());
     }

@@ -38,11 +38,11 @@ public class ArticleService {
 
     /// 게시글 생성
     @Transactional
-    public Article createArticle(String title, String content, MultipartFile image) {
-        if(title.isEmpty()) throw new BadRequestException("Title cannot be empty");
+    public Article createArticle(ArticleRequestDTO articleRequestDTO, MultipartFile image) {
+        if(articleRequestDTO.getTitle().isEmpty()) throw new BadRequestException("Title cannot be empty");
         Article article = Article.builder()
-                .title(title)
-                .content(content)
+                .title(articleRequestDTO.getTitle())
+                .content(articleRequestDTO.getContent())
                 .author(memberService.getCurrentNickname())
                 .build();
         articleRepository.save(article);
@@ -50,7 +50,6 @@ public class ArticleService {
             String url = imageService.ImageUpload(image, "article/", article.getId());
             ArticleImage articleImage = ArticleImage.builder().article(article).url(url).build();
             articleImageRepository.save(articleImage);
-            article.getArticleImages().add(articleImage);
         }
         return article;
     }
@@ -75,9 +74,7 @@ public class ArticleService {
 
     /// 게시글 수정
     public Article editArticle(long id, ArticleRequestDTO articleRequestDTO, MultipartFile image) {
-        String nickname = memberService.getCurrentNickname();
         Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("article not found"));
-        if(!article.getAuthor().equals(nickname)) {throw new ForbiddenException("you are not authorized to edit");}
         article.setTitle(articleRequestDTO.getTitle());
         article.setContent(articleRequestDTO.getContent());
         if(image != null) {
@@ -97,11 +94,12 @@ public class ArticleService {
         return articles.stream().map(ArticleListDTO::new).collect(Collectors.toList());
     }
     /// 페이징 조회
-    public ArticlePageDTO getArticlesPerPage(int page, int size) {
+    public List<ArticleListDTO> getArticlesPerPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Article> articlePage = articleRepository.findAll(pageable);
         List<ArticleListDTO> articlelist = articlePage.getContent().stream().map(ArticleListDTO::new).collect(Collectors.toList());
-        return new ArticlePageDTO(articlePage, articlelist);
+        //new ArticlePageDTO(articlePage, articlelist);
+        return articlelist;
     }
 
 }
