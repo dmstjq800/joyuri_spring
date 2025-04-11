@@ -21,8 +21,11 @@ import project.demo.member.dto.MemberDTO;
 import project.demo.member.entity.Member;
 import project.demo.member.service.MemberService;
 import project.demo.security.exeption.customexception.BadRequestException;
+import project.demo.security.exeption.customexception.ReLoginException;
 import project.demo.security.exeption.customexception.UnauthorizedException;
 import project.demo.security.jwt.JWTutil;
+
+import javax.management.relation.RelationException;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,13 +48,10 @@ public class AuthController {
         } catch (Exception e){
             throw new Exception("로그인 실패", e);
         }
-
         Member member = memberService.findByusername(memberDTO.getUsername());
         final String jwt = jwtUtil.generateToken(member);
-
         final String refreshToken = jwtUtil.generateRefreshToken(jwt);
         memberService.saveToken(member.getUsername(), refreshToken);
-
         return ResponseEntity.ok(new AuthResponse(jwt, member));
     }
     /// 리프레시 토큰 검증
@@ -68,7 +68,7 @@ public class AuthController {
                 jwtUtil.isTokenExpired(refreshToken);
             }
         }catch (ExpiredJwtException e){
-            throw new BadRequestException("refresh token expired, Please login again");
+            throw new ReLoginException("refresh token expired, Please login again");
         }
 
         String jwt = jwtUtil.generateToken(member);

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -48,14 +50,24 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeHttpRequests((authrize) -> authrize
-                        .requestMatchers("/admin/*").hasRole("ADMIN")
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        // ADMIN
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        // ADMIN, ARTIST
+                        .requestMatchers("/article/write", "article/", "/goods/add", "/goods/").hasAnyRole("ADMIN", "ARTIST")
+                        // Required Login
+                        .requestMatchers(HttpMethod.POST, "/article/*/comment").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/article/*/comment").authenticated()
+                        //.requestMatchers(HttpMethod.PUT, "").authenticated()
+                        // Permit All
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                        .requestMatchers("/login", "/refresh", "/member/join").permitAll()
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).formLogin((form) -> form.disable()
+
                 ).exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint())
         );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -83,7 +95,15 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"message\": \"You are not allowed to access this resource.\"}");
+            response.getWriter().write("{\"message\": \"권한 없음\"}");
+        };
+    }
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"message\": \"로그인 필요\"}");
         };
     }
 

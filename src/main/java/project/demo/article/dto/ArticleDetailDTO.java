@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.ArticleImage;
-import project.demo.article.entity.Comment;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,20 +26,20 @@ public class ArticleDetailDTO {
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime modifyDate;
     private List<ArticleImage> images;
-    private List<CommentDTO> comments;
+    private List<CommentResponseDTO> comments;
     private int commentCount;
     private long likes;
     private boolean liked;
 
 
-    public ArticleDetailDTO(Article article, List<CommentDTO> commentDTOList, Boolean liked) {
+    public ArticleDetailDTO(Article article, List<CommentResponseDTO> commentResponseDTOList, Boolean liked) {
         this.id = article.getId();
         this.author = article.getAuthor();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.createDate = article.getCreateDate();
         this.modifyDate = article.getModifyDate();
-        this.comments = commentDTOList;
+        this.comments = commentResponseDTOList;
         this.images = article.getArticleImages();
         this.likes = article.getLikes();
         this.commentCount = article.getComment().size();

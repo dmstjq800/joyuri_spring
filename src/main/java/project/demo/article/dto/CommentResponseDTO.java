@@ -9,13 +9,12 @@ import lombok.Setter;
 import project.demo.article.entity.Comment;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class CommentDTO {
+public class CommentResponseDTO {
     private Long id;
     private String author;
     private String content;
@@ -23,7 +22,7 @@ public class CommentDTO {
     private LocalDateTime createDate;
     private int children;
 
-    public CommentDTO(Comment comment){
+    public CommentResponseDTO(Comment comment){
         this.id = comment.getId();
         this.author = comment.getAuthor().getNickname();
         this.content = comment.getContent();

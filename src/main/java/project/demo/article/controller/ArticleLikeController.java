@@ -14,7 +14,7 @@ import project.demo.article.service.ArticleLikeService;
 public class ArticleLikeController {
     private final ArticleLikeService articleLikeService;
     /// 좋아요
-    @PostMapping("/{id}/likeit")
+    @PostMapping("/likeit/{id}")
     public ResponseEntity<?> likeArticle(@PathVariable String id) {
         return articleLikeService.like(Long.parseLong(id));
     }

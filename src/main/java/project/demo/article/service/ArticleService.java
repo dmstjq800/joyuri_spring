@@ -17,7 +17,6 @@ import project.demo.article.repository.ArticleRepository;
 import project.demo.article.repository.CommentRepository;
 import project.demo.image.service.ImageService;
 import project.demo.member.service.MemberService;
-import project.demo.security.exeption.customexception.ForbiddenException;
 import project.demo.security.exeption.customexception.BadRequestException;
 import project.demo.security.exeption.customexception.NotFoundException;
 
@@ -64,8 +63,8 @@ public class ArticleService {
     public ArticleDetailDTO getArticleDetail(long id) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("article not found"));
         boolean liked = articleLikeService.liked(article);
-        List<CommentDTO> commentDTOList = commentService.getCommentList(id);
-        return new ArticleDetailDTO(article, commentDTOList, liked);
+        List<CommentResponseDTO> commentResponseDTOList = commentService.getCommentList(id);
+        return new ArticleDetailDTO(article, commentResponseDTOList, liked);
     }
 
     public Article findById(long id) {

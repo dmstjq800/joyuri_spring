@@ -34,8 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/login",
             "/refresh",
             "/member/join"
-
-            // 다른 허용할 URI 패턴들을 추가
     );
 
     @Override
@@ -62,9 +60,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try{
                 username = jwtUtil.extractUsername(jwt);
             }catch (ExpiredJwtException e){
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT token");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\": \"토큰 만료\"}");
+                return;
             }catch (MalformedJwtException e){
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Malformed JWT token");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\": \"토큰 무결성 오류\"}");
+                return;
             }
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

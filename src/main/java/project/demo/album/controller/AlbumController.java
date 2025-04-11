@@ -24,7 +24,6 @@ public class AlbumController {
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
         if (albumDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
         return albumService.addAlbum(albumDTO, image);
@@ -39,13 +38,13 @@ public class AlbumController {
 
     ///  앨범 디테일
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAlbum(@PathVariable String id) {
-        return albumService.getAlbumDetailById(Long.parseLong(id));
+    public ResponseEntity<?> getAlbum(@PathVariable long id) {
+        return albumService.getAlbumDetailById(id);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAlbum(String id) {
-        return albumService.deleteAlbum(Long.parseLong(id));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable long id) {
+        return albumService.deleteAlbum(id);
     }
 
 }

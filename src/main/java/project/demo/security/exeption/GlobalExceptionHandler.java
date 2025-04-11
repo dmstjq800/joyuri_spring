@@ -17,6 +17,10 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(ReLoginException.class)
+    public ResponseEntity<String> handleRelogin(ReLoginException ex) {
+        return ResponseEntity.status(499).body(ex.getMessage());
+    }
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handleUnauthorized(UnauthorizedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
@@ -49,8 +53,6 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining("\n"));
-
-        // 합쳐진 전체 에러 메시지를 응답으로 보냄
         return new ResponseEntity<>(allErrors, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(Exception.class)

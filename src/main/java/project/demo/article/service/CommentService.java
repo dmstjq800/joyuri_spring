@@ -3,10 +3,9 @@ package project.demo.article.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import project.demo.article.dto.CommentDTO;
+import project.demo.article.dto.CommentRequestDTO;
+import project.demo.article.dto.CommentResponseDTO;
 import project.demo.article.entity.Article;
 import project.demo.article.entity.Comment;
 import project.demo.article.repository.ArticleRepository;
@@ -31,13 +30,13 @@ public class CommentService {
 
     /// 댓글 작성
     @Transactional
-    public Comment insertComment(long id, CommentDTO commentDTO) {
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("Article not found"));
-        if(commentDTO.getContent() == null || commentDTO.getContent().isEmpty()) throw new BadRequestException("Comment content is null");
+    public Comment insertComment(long articleId, CommentRequestDTO commentRequestDTO) {
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new NotFoundException("Article not found"));
+        if(commentRequestDTO.getContent() == null || commentRequestDTO.getContent().isEmpty()) throw new BadRequestException("Comment content is null");
         Member member = memberService.getCurrentMember();
         Comment comment = Comment.builder()
                 .article(article)
-                .content(commentDTO.getContent())
+                .content(commentRequestDTO.getContent())
                 .author(member)
                 .build();
         commentRepository.save(comment);
@@ -45,23 +44,23 @@ public class CommentService {
     }
     /// 댓글 삭제
     @Transactional
-    public Comment deleteCommnet(CommentDTO commentDTO) {
+    public Comment deleteComment(long id) {
         Member member = memberService.getCurrentMember();
-        Comment comment = commentRepository.findById(commentDTO.getId()).orElseThrow(() -> new NotFoundException("Comment not found"));
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found"));
         if(!comment.getAuthor().equals(member) && !member.getRoles().contains("ROLE_ADMIN")) throw new ForbiddenException("Forbidden");
         commentRepository.delete(comment);
         return comment;
     }
     /// 대댓글 작성
     @Transactional
-    public Comment insertChildren(CommentDTO commentDTO) {
-        Comment parent = commentRepository.findById(commentDTO.getId()).orElseThrow(() -> new NotFoundException("Parent not found"));
+    public Comment insertChildren(long parentId, CommentRequestDTO commentRequestDTO) {
+        Comment parent = commentRepository.findById(parentId).orElseThrow(() -> new NotFoundException("Parent not found"));
         if(parent.getParent() != null) throw new BadRequestException("This comment already has a parent");
         Article article = parent.getArticle();
         Member member = memberService.getCurrentMember();
         Comment children = Comment.builder()
                 .parent(parent)
-                .content(commentDTO.getContent())
+                .content(commentRequestDTO.getContent())
                 .author(member)
                 .article(article)
                 .build();
@@ -69,17 +68,17 @@ public class CommentService {
         return children;
     }
     /// 댓글 리스트
-    public List<CommentDTO> getCommentList(long id) {
+    public List<CommentResponseDTO> getCommentList(long id) {
         List<Comment> commentList = commentRepository.findCommentByArticleId(id).orElse(null);
-        List<CommentDTO> commentDTOList = new ArrayList<>();
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
         for(Comment comment : commentList) {
-            commentDTOList.add(new CommentDTO(comment));
+            commentResponseDTOList.add(new CommentResponseDTO(comment));
         }
-        return commentDTOList;
+        return commentResponseDTOList;
     }
     /// 대댓글 리스트
-    public List<CommentDTO> findByParentId(long id) {
+    public List<CommentResponseDTO> findByParentId(long id) {
         List<Comment> comments = commentRepository.findByParentId(id).orElseThrow(() -> new NotFoundException("Comment not found"));
-        return comments.stream().map(CommentDTO::new).collect(Collectors.toList());
+        return comments.stream().map(CommentResponseDTO::new).collect(Collectors.toList());
     }
 }

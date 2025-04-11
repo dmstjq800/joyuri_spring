@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.demo.article.dto.CommentDTO;
+import project.demo.article.dto.CommentResponseDTO;
 import project.demo.article.service.ArticleService;
 import project.demo.article.service.CommentService;
 
@@ -22,7 +22,7 @@ public class CommentQueryController {
 
     /// 댓글 리스트
     @GetMapping("/{id}/commentList")
-    public ResponseEntity<List<CommentDTO>> commentList(@PathVariable String id) {
+    public ResponseEntity<List<CommentResponseDTO>> commentList(@PathVariable String id) {
 
         if(articleService.findById(Long.parseLong(id)) == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(commentService.getCommentList(Long.parseLong(id)));
