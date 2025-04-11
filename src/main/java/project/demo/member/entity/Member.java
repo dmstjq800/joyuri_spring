@@ -28,6 +28,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 public class Member implements UserDetails {
 
+    public enum role {
+        ROLE_ADMIN,
+        ROLE_USER,
+        ROLE_ARTIST
+    }
+
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private long id;
@@ -55,7 +61,6 @@ public class Member implements UserDetails {
                      .map(SimpleGrantedAuthority::new)
                      .collect(Collectors.toList());
     }
-
     @Column(columnDefinition = "TEXT")
     private String RefreshToken;
 }

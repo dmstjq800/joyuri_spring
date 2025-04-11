@@ -60,7 +60,7 @@ public class GoodsController {
     @PostMapping("/{id}/update")
     @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<?> updateGoods(@PathVariable long id, GoodsAddDTO goodsAddDTO,
-                                         @RequestParam("image") MultipartFile image) {
+                                         @RequestParam(value = "image", required = false) MultipartFile image) {
         Goods goods = goodsService.updateGoods(id, goodsAddDTO, image);
         return ResponseEntity.ok(goods.getId());
     }

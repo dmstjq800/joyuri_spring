@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
@@ -54,6 +53,7 @@ public class CommentService {
         return comment;
     }
     /// 대댓글 작성
+    @Transactional
     public Comment insertChildren(CommentDTO commentDTO) {
         Comment parent = commentRepository.findById(commentDTO.getId()).orElseThrow(() -> new NotFoundException("Parent not found"));
         if(parent.getParent() != null) throw new BadRequestException("This comment already has a parent");

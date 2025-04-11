@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +48,13 @@ import java.util.stream.Collectors;
 @Generated
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-//    private final BCryptPasswordEncoder passwordEncoder;
+
+    private final BCryptPasswordEncoder passwordEncoder;
+
     private final JavaMailSender mailSender;
-    @Autowired
-    private TemplateEngine templateEngine;
+
+    private final TemplateEngine templateEngine;
+
     @Value("${frontend-url}")
     private String front_url;
 
@@ -155,7 +159,6 @@ public class MemberService implements UserDetailsService {
     }
     /// 비밀번호 변경
     public Member updatePassword(UpdatePasswordDTO updatePasswordDTO) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Member member = memberRepository.findByUsername(getCurrentUsername()).orElseThrow(() -> new NotFoundException("user not found"));
         if(!passwordEncoder.matches(updatePasswordDTO.getOldPassword(), member.getPassword())){
             throw new ForbiddenException("not match");
@@ -196,18 +199,5 @@ public class MemberService implements UserDetailsService {
         return member.getRefreshToken();
     }
 
-    /// admin전용
-    public ResponseEntity<?> getUserList() {
-        List<MemberResponseDTO> memberResponseDTOList = memberRepository.findAll().stream().map(MemberResponseDTO::new).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(memberResponseDTOList);
-    }
-    /// admin 전용
-    @Transactional
-    public ResponseEntity<?> addRole(RoleDTO roleDTO) {
-        Member member = memberRepository.findByNickname(roleDTO.getNickname()).orElse(null);
-        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not exist");
-        member.setRoles(roleDTO.getRoles());
-        return ResponseEntity.status(HttpStatus.OK).body("success");
-    }
 
 }

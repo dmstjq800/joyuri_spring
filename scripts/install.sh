@@ -2,7 +2,7 @@
 echo "Installing Spring Boot app..."
 
 # JAR 이동
-cp /home/ec2-user/app/joyuri.jar /opt/springboot/joyuri.jar
+mv /home/ec2-user/app/joyuri.jar /opt/springboot/joyuri.jar
 
 # systemd 서비스 등록
 cat <<EOF > /etc/systemd/system/springboot.service

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 
@@ -30,13 +31,12 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtFilter;
-    private final ObjectMapper objectMapper;
-
-
+    public SecurityConfig(@Lazy JwtAuthenticationFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -56,7 +56,6 @@ public class SecurityConfig {
                 ).formLogin((form) -> form.disable()
                 ).exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())
-
         );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
