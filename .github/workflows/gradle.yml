@@ -77,3 +77,10 @@ jobs:
 
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
+
+    - name: Deploy to EKS (using latest tag) 🚀
+      run: |
+        kubectl set image deployment/backend-deployment \
+        backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest \
+        -n default \ 
+        --record
