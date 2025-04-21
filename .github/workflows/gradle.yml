@@ -54,13 +54,33 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려짐.
         aws-region: ap-northeast-2
 
-    - name: Upload to S3
-      run: aws s3 cp ./backend.zip s3://mybucket-ces-joyuri/joyuri/backend.zip
+    # - name: Upload to S3
+    #   run: aws s3 cp ./backend.zip s3://mybucket-ces-joyuri/joyuri/backend.zip
 
-    - name: Deploy with CodeDeploy
+    # - name: Deploy with CodeDeploy
+    #   run: |
+    #        aws deploy create-deployment \
+    #        --application-name springboot-app \
+    #        --deployment-group-name springboot-dg \
+    #        --s3-location bucket=mybucket-ces-joyuri,bundleType=zip,key=joyuri/backend.zip \
+    #        --region ap-northeast-2
+
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1  
+
+    - name: Build and Push Docker image
       run: |
-           aws deploy create-deployment \
-           --application-name springboot-app \
-           --deployment-group-name springboot-dg \
-           --s3-location bucket=mybucket-ces-joyuri,bundleType=zip,key=joyuri/backend.zip \
-           --region ap-northeast-2
+       docker build -t joyuri-backend:latest .
+       docker tag joyuri-backend:latest 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest
+       docker push 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
+
+    - name: Deploy to EKS (using latest tag) 🚀
+      run: |
+        kubectl set image deployment/backend-deployment \
+        backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest \
+        -n default \ 
+        --record
