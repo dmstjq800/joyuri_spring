@@ -25,6 +25,7 @@ import project.demo.image.service.ImageService;
 import project.demo.security.exeption.customexception.NotFoundException;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class GoodsService {
         return goodsPage;
     }
     ///  굿즈 추가
-    public Goods addGoods(GoodsAddDTO goodsAddDTO, MultipartFile image) {
+    public Goods addGoods(GoodsAddDTO goodsAddDTO, MultipartFile image) throws IOException {
         Goods goods = Goods.builder()
                 .goodsName(goodsAddDTO.getName())
                 .description(goodsAddDTO.getDescription())
@@ -75,7 +76,7 @@ public class GoodsService {
         return goods;
     }
 
-    public Goods updateGoods(long id, GoodsAddDTO goodsAddDTO, MultipartFile image) {
+    public Goods updateGoods(long id, GoodsAddDTO goodsAddDTO, MultipartFile image) throws IOException {
         Goods goods = goodsRepository.findById(id).orElseThrow(() -> new NotFoundException("goods not found"));
         goods.setGoodsName(goodsAddDTO.getName());
         goods.setDescription(goodsAddDTO.getDescription());

@@ -13,6 +13,8 @@ import project.demo.article.entity.Article;
 
 import project.demo.article.service.ArticleService;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/article")
@@ -26,7 +28,7 @@ public class ArticleController {
     /// 게시글 작성
     @PostMapping("/write")
     public ResponseEntity<?> writeArticle(ArticleRequestDTO articleRequestDTO,
-                                               @RequestParam(value = "image", required = false) MultipartFile image) {
+                                               @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Article article = articleService.createArticle(articleRequestDTO, image);
         return ResponseEntity.ok("success : " + article.getId());
     }
@@ -38,7 +40,7 @@ public class ArticleController {
     }
     /// 게시글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<String> editArticle(@PathVariable long id, ArticleRequestDTO articleRequestDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<String> editArticle(@PathVariable long id, ArticleRequestDTO articleRequestDTO, @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Article article = articleService.editArticle(id, articleRequestDTO, image);
         return ResponseEntity.ok("success : " + article.getId());
     }

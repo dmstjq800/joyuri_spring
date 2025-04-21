@@ -12,6 +12,8 @@ import project.demo.goods.dto.GoodsAddDTO;
 import project.demo.goods.entity.Goods;
 import project.demo.goods.service.GoodsService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/goods")
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class GoodsController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addGoods(GoodsAddDTO goodsAddDTO,
-                                      @RequestParam("image") MultipartFile image) {
+                                      @RequestParam("image") MultipartFile image) throws IOException {
         Goods goods = goodsService.addGoods(goodsAddDTO, image);
         return ResponseEntity.ok(goods);
     }
@@ -54,7 +56,7 @@ public class GoodsController {
     /// 굿즈 수정
     @PutMapping("/{id}")
     public ResponseEntity<?> updateGoods(@PathVariable long id, GoodsAddDTO goodsAddDTO,
-                                         @RequestParam(value = "image", required = false) MultipartFile image) {
+                                         @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Goods goods = goodsService.updateGoods(id, goodsAddDTO, image);
         return ResponseEntity.ok(goods.getId());
     }

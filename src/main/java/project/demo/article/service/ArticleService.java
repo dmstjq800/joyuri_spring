@@ -21,6 +21,7 @@ import project.demo.member.service.MemberService;
 import project.demo.security.exeption.customexception.BadRequestException;
 import project.demo.security.exeption.customexception.NotFoundException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class ArticleService {
     /// 게시글 생성
     @Transactional
     @PreAuthorize("isAuthenticated() and hasAnyRole('ADMIN', 'ARTIST')")
-    public Article createArticle(ArticleRequestDTO articleRequestDTO, MultipartFile image) {
+    public Article createArticle(ArticleRequestDTO articleRequestDTO, MultipartFile image) throws IOException {
         if(articleRequestDTO.getTitle().isEmpty()) throw new BadRequestException("Title cannot be empty");
         Article article = Article.builder()
                 .title(articleRequestDTO.getTitle())
@@ -76,7 +77,7 @@ public class ArticleService {
 
     /// 게시글 수정
     @PreAuthorize("isAuthenticated() and hasAnyRole('ADMIN', 'ARTIST')")
-    public Article editArticle(long id, ArticleRequestDTO articleRequestDTO, MultipartFile image) {
+    public Article editArticle(long id, ArticleRequestDTO articleRequestDTO, MultipartFile image) throws IOException {
         Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("article not found"));
         article.setTitle(articleRequestDTO.getTitle());
         article.setContent(articleRequestDTO.getContent());

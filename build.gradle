@@ -45,6 +45,11 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// AWS SDK for Java v2 - S3
+	implementation platform('software.amazon.awssdk:bom:2.25.59')
+	implementation 'software.amazon.awssdk:s3'
+	implementation 'software.amazon.awssdk:auth'
+	implementation 'software.amazon.awssdk:regions'
 }
 
 tasks.named('test') {

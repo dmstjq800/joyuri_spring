@@ -16,6 +16,7 @@ import project.demo.album.repository.AlbumImageRepository;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Controller
@@ -31,7 +32,7 @@ public class ImageController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public ResponseEntity<?> FileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> FileUpload(@RequestParam("file") MultipartFile file) throws IOException {
 
 
         Album album = Album.builder().title("hi").description("hi2").albumImages(new ArrayList<>()).build();

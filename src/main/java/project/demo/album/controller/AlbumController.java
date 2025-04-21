@@ -13,6 +13,7 @@ import project.demo.album.service.AlbumService;
 import project.demo.article.entity.ArticleImage;
 import project.demo.article.repository.ArticleRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class AlbumController {
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
-    public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<?> addAlbum(@RequestBody AlbumDTO albumDTO, @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         if (albumDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
         return albumService.addAlbum(albumDTO, image);
     }

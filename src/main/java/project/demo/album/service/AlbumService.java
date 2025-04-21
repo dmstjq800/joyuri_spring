@@ -19,6 +19,7 @@ import project.demo.goods.entity.Goods;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class AlbumService {
     }
 
     /// 앨범 추가
-    public ResponseEntity<?> addAlbum(AlbumDTO albumDTO, MultipartFile image) {
+    public ResponseEntity<?> addAlbum(AlbumDTO albumDTO, MultipartFile image) throws IOException {
         Album album = Album.builder()
                 .title(albumDTO.getTitle())
                 .description(albumDTO.getDescription())

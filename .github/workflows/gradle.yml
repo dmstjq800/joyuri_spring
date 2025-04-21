@@ -64,8 +64,12 @@ jobs:
     #        --deployment-group-name springboot-dg \
     #        --s3-location bucket=mybucket-ces-joyuri,bundleType=zip,key=joyuri/backend.zip \
     #        --region ap-northeast-2
-
-
+    - name: write application.properties
+      run: |
+        cat << EOF >> application.properties
+        aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }}
+        aws.credentials.secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        EOF
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1  
 
@@ -82,5 +86,4 @@ jobs:
       run: |
         kubectl set image deployment/backend-deployment \
         backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest \
-        -n default \ 
-        --record
+        

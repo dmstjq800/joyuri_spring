@@ -22,7 +22,7 @@ public class ArticleInitService {
     /// init service
     @EventListener(ApplicationReadyEvent.class)
     public void initarticle(){
-        
+        if(articleRepository.count() > 0) return;
         for(int i = 1; i < 12; i++){
             Article article = Article.builder()
                     .title("율 사진 " + i)
