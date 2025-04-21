@@ -57,7 +57,7 @@ public class SecurityConfig {
                         // ADMIN, ARTIST
                         .requestMatchers("article/*", "/goods/*").hasAnyRole("ADMIN", "ARTIST")
                         // Required Login
-                        .requestMatchers(HttpMethod.POST, "/article/*/comment").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/article/*/comment", "/member/**", "/article/*/likeit").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/article/*/comment").authenticated()
                         //.requestMatchers(HttpMethod.PUT, "").authenticated()
                         // Permit All
