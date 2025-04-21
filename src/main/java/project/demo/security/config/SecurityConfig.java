@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/article/*/comment").authenticated()
                         //.requestMatchers(HttpMethod.PUT, "").authenticated()
                         // Permit All
-                        .requestMatchers("/login", "/refresh", "/member/join", "/member/verify-email/**").permitAll()
+                        .requestMatchers("/login", "/refresh", "/member/join", "/member/**").permitAll()
 
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
