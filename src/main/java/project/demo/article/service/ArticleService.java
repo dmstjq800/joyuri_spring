@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.article.dto.*;
@@ -37,6 +38,7 @@ public class ArticleService {
 
     /// 게시글 생성
     @Transactional
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ADMIN', 'ARTIST')")
     public Article createArticle(ArticleRequestDTO articleRequestDTO, MultipartFile image) {
         if(articleRequestDTO.getTitle().isEmpty()) throw new BadRequestException("Title cannot be empty");
         Article article = Article.builder()
@@ -53,6 +55,7 @@ public class ArticleService {
         return article;
     }
     /// 게시글 삭제
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ADMIN', 'ARTIST')")
     @Transactional
     public Article deleteArticle(long id) {
         Article article = articleRepository.findById(id).orElseThrow( () -> new NotFoundException("article not found"));
@@ -72,6 +75,7 @@ public class ArticleService {
     }
 
     /// 게시글 수정
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ADMIN', 'ARTIST')")
     public Article editArticle(long id, ArticleRequestDTO articleRequestDTO, MultipartFile image) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("article not found"));
         article.setTitle(articleRequestDTO.getTitle());

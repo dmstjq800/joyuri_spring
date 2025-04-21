@@ -50,17 +50,19 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeHttpRequests((authrize) -> authrize
+                        .requestMatchers(HttpMethod.GET,"/home", "/images/**", "/article/**", "/album/**", "/goods/**", "/career/**", "/concert/**").permitAll()
                         // ADMIN
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+
                         // ADMIN, ARTIST
-                        .requestMatchers("/article/write", "article/", "/goods/add", "/goods/").hasAnyRole("ADMIN", "ARTIST")
+                        .requestMatchers("article/*", "/goods/*").hasAnyRole("ADMIN", "ARTIST")
                         // Required Login
                         .requestMatchers(HttpMethod.POST, "/article/*/comment").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/article/*/comment").authenticated()
                         //.requestMatchers(HttpMethod.PUT, "").authenticated()
                         // Permit All
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
-                        .requestMatchers("/login", "/refresh", "/member/join").permitAll()
+                        .requestMatchers("/login", "/refresh", "/member/join", "/member/verify-email/**").permitAll()
+
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).formLogin((form) -> form.disable()

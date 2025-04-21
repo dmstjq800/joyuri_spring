@@ -19,7 +19,7 @@ import project.demo.member.service.MemberService;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
+    
     /// 회원가입
     @PostMapping("/join")
     public ResponseEntity<String> join(@Valid @RequestBody MemberDTO memberDTO) throws MessagingException {

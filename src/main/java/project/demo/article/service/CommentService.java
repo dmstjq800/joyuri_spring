@@ -3,6 +3,7 @@ package project.demo.article.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import project.demo.article.dto.CommentRequestDTO;
 import project.demo.article.dto.CommentResponseDTO;
@@ -30,6 +31,7 @@ public class CommentService {
 
     /// 댓글 작성
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public Comment insertComment(long articleId, CommentRequestDTO commentRequestDTO) {
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new NotFoundException("Article not found"));
         if(commentRequestDTO.getContent() == null || commentRequestDTO.getContent().isEmpty()) throw new BadRequestException("Comment content is null");
@@ -44,6 +46,7 @@ public class CommentService {
     }
     /// 댓글 삭제
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public Comment deleteComment(long id) {
         Member member = memberService.getCurrentMember();
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found"));
@@ -52,6 +55,7 @@ public class CommentService {
         return comment;
     }
     /// 대댓글 작성
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public Comment insertChildren(long parentId, CommentRequestDTO commentRequestDTO) {
         Comment parent = commentRepository.findById(parentId).orElseThrow(() -> new NotFoundException("Parent not found"));

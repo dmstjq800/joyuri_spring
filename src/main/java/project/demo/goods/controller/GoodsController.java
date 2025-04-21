@@ -38,6 +38,7 @@ public class GoodsController {
     public String add(){
         return "article/article";
     }
+
     @PostMapping("/add")
     public ResponseEntity<?> addGoods(GoodsAddDTO goodsAddDTO,
                                       @RequestParam("image") MultipartFile image) {

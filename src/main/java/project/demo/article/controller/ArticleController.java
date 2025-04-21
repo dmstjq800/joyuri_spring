@@ -32,14 +32,12 @@ public class ArticleController {
     }
     /// 게시글 삭제
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<String> deleteArticle(@PathVariable long id) {
         Article article = articleService.deleteArticle(id);
         return ResponseEntity.ok("success : " + article.getId());
     }
     /// 게시글 수정
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<String> editArticle(@PathVariable long id, ArticleRequestDTO articleRequestDTO, @RequestParam(value = "image", required = false) MultipartFile image) {
         Article article = articleService.editArticle(id, articleRequestDTO, image);
         return ResponseEntity.ok("success : " + article.getId());
