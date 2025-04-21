@@ -64,3 +64,15 @@ jobs:
            --deployment-group-name springboot-dg \
            --s3-location bucket=mybucket-ces-joyuri,bundleType=zip,key=joyuri/backend.zip \
            --region ap-northeast-2
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1  
+
+    - name: Build and Push Docker image
+      run: |
+       docker build -t joyuri-backend:latest .
+       docker tag joyuri-backend:latest 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest
+       docker push 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:latest
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
