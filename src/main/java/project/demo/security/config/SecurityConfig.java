@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeHttpRequests((authrize) -> authrize
                         .requestMatchers(HttpMethod.GET,"/home", "/images/**", "/article/**", "/album/**", "/goods/**", "/career/**", "/concert/**").permitAll()
+                        .requestMatchers("/login", "/refresh", "/member/join", "/member/verify-email").permitAll()
                         // ADMIN
                         .requestMatchers("/admin/**", "/album/**", "/concert/**", "/career/**").hasAnyRole("ADMIN")
 
@@ -61,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/article/*/comment").authenticated()
                         //.requestMatchers(HttpMethod.PUT, "").authenticated()
                         // Permit All
-                        .requestMatchers("/login", "/refresh", "/member/join", "/member/**").permitAll()
+
 
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
