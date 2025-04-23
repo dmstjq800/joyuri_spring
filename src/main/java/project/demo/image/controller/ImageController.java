@@ -45,11 +45,6 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.OK).body("file successfully uploaded");
     }
 
-    @Value("${image.upload-dir}")
-    private String uploadDir;
-
-
-
 
 
 

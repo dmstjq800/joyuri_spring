@@ -10,13 +10,21 @@ import java.util.List;
 @Getter
 @Setter
 public class PageResponseDTO {
-    List<AlbumDTO> albumDTOList;
-    private long totalElements;
+    List<AlbumResponseDTO> albumResponseDTOList;
+    private int pageNumber;
+    private int pageSize;
     private int totalPages;
+    private long totalElements;
+    private boolean first;
+    private boolean last;
 
-    public PageResponseDTO(List<AlbumDTO> albumDTOList, Page<Album>  page){
-        this.albumDTOList = albumDTOList;
-        totalElements = page.getTotalElements();
-        totalPages = page.getTotalPages();
+    public PageResponseDTO(List<AlbumResponseDTO> albumResponseDTOList, Page<Album> page){
+        this.albumResponseDTOList = albumResponseDTOList;
+        this.pageNumber = page.getNumber();
+        this.pageSize = page.getSize();
+        this.totalElements = page.getTotalElements();
+        this.totalPages = page.getTotalPages();
+        this.first = page.isFirst();
+        this.last = page.isLast();
     }
 }

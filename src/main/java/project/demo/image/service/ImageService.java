@@ -16,18 +16,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-    private String path;
-    private final AlbumImageRepository albumImageRepository;
     private final S3Client s3Client;
 
-    @Value("${multipart.image.url}")
-    String url;
+
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
 
     public String ImageUpload(MultipartFile file, String path, long id) throws IOException {
-        String filePath = url.concat(path);
+
         String name = path.replace("/", "");
 
         if(file.isEmpty()){return null;}
@@ -43,7 +40,6 @@ public class ImageService {
         try {
             String oriFilename = file.getOriginalFilename();
             String newFilename = name + id + oriFilename.substring(oriFilename.lastIndexOf("."));
-
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key("images/" + path + newFilename)

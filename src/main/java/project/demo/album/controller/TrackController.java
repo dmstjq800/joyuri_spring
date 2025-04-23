@@ -14,8 +14,8 @@ public class TrackController {
     private final TrackService trackService;
     /// 인가된 사용자만 가능
     @PostMapping("/addTrack")
-    public ResponseEntity<?> addTrack(@PathVariable String id, @RequestBody TrackDTO trackDTO) {
+    public ResponseEntity<?> addTrack(@PathVariable long id, @RequestBody TrackDTO trackDTO) {
         if(trackDTO.getTitle() == null || trackDTO.getTitle().isEmpty()) {return ResponseEntity.status(400).body("Title cannot be empty");}
-        return trackService.addTrack(Long.parseLong(id), trackDTO);
+        return trackService.addTrack(id, trackDTO);
     }
 }

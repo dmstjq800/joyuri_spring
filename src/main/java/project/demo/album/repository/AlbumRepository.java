@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     List<Album> findAllByOrderByIdDesc();
+    Page<Album> findAllByOrderByIdDesc(Pageable pageable);
 }

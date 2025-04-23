@@ -2,20 +2,19 @@ package project.demo.album.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import project.demo.album.dto.AlbumDTO;
+import project.demo.album.dto.AlbumAddDTO;
+import project.demo.album.dto.AlbumResponseDTO;
 import project.demo.album.dto.AlbumDetailDTO;
+
 import project.demo.album.dto.PageResponseDTO;
 import project.demo.album.entity.Album;
 import project.demo.album.entity.AlbumImage;
 import project.demo.album.repository.AlbumImageRepository;
-import project.demo.goods.entity.Goods;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
 
@@ -38,22 +37,21 @@ public class AlbumService {
     }
 
     /// 앨범 추가
-    public ResponseEntity<?> addAlbum(AlbumDTO albumDTO, MultipartFile image) throws IOException {
+    public ResponseEntity<?> addAlbum(AlbumAddDTO albumAddDTO, MultipartFile image) throws IOException {
         Album album = Album.builder()
-                .title(albumDTO.getTitle())
-                .description(albumDTO.getDescription())
+                .title(albumAddDTO.getTitle())
+                .description(albumAddDTO.getDescription())
+                .releaseDate(albumAddDTO.getReleaseDate())
+                .tags(albumAddDTO.getTags())
                 .build();
         albumRepository.save(album);
         if (image != null) {
             String url = imageService.ImageUpload(image, "album/", album.getId());
-            AlbumImage albumImage = AlbumImage.builder().url(url).build();
+            AlbumImage albumImage = AlbumImage.builder().album(album).url(url).build();
             albumImageRepository.save(albumImage);
-            album.getAlbumImages().add(albumImage);
         }
-
         return ResponseEntity.ok("Album added");
     }
-
     /// 앨범 겟
     public ResponseEntity<?> getAlbumDetailById(long id) {
         Album album = albumRepository.findById(id).orElse(null);
@@ -67,14 +65,16 @@ public class AlbumService {
 
 
     /// 앨범리스트 겟
-    public ResponseEntity<List<AlbumDTO>> getAlbumList() {
-        List<Album> albumList = albumRepository.findAllByOrderByIdDesc();
-        List<AlbumDTO> list = new ArrayList<>();
-        for (Album album : albumList) {
-            list.add(new AlbumDTO(album));
-        }
+    public PageResponseDTO getAlbumList(Pageable pageable) {
+        List<AlbumResponseDTO> list = new ArrayList<>();
 
-        return ResponseEntity.ok(list);
+        Page<Album> albumpage = albumRepository.findAllByOrderByIdDesc(pageable);
+
+        for (Album album : albumpage.getContent()) {
+            list.add(new AlbumResponseDTO(album));
+        }
+        PageResponseDTO pageResponseDTO = new PageResponseDTO(list, albumpage);
+        return pageResponseDTO;
     }
 }
 
