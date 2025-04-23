@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authrize) -> authrize
                         .requestMatchers(HttpMethod.GET,"/home", "/images/**", "/article/**", "/album/**", "/goods/**", "/career/**", "/concert/**").permitAll()
                         // ADMIN
-                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/admin/**", "/album/**", "/concert/**", "/career/**").hasAnyRole("ADMIN")
 
                         // ADMIN, ARTIST
                         .requestMatchers("article/*", "/goods/*").hasAnyRole("ADMIN", "ARTIST")

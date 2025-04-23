@@ -17,6 +17,7 @@ import project.demo.album.entity.AlbumImage;
 import project.demo.album.repository.AlbumImageRepository;
 import project.demo.image.service.ImageService;
 import project.demo.album.repository.AlbumRepository;
+import project.demo.security.exeption.customexception.NotFoundException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,15 +30,15 @@ public class AlbumService {
     private final ImageService imageService;
     private final AlbumImageRepository albumImageRepository;
 
-    public ResponseEntity<?> deleteAlbum(long id) {
-        Album album = albumRepository.findById(id).orElse(null);
-        if (album == null) return ResponseEntity.notFound().build();
+    public Album deleteAlbum(long id) {
+        Album album = albumRepository.findById(id).orElseThrow(() -> new NotFoundException("Album not found"));
         albumRepository.delete(album);
-        return ResponseEntity.ok("success");
+        return album;
     }
 
     /// 앨범 추가
-    public ResponseEntity<?> addAlbum(AlbumAddDTO albumAddDTO, MultipartFile image) throws IOException {
+    public Album addAlbum(AlbumAddDTO albumAddDTO, MultipartFile image) throws IOException {
+        if(albumAddDTO.getTitle() == null || albumAddDTO.getTitle().isEmpty()) {throw new NotFoundException("Title is required");}
         Album album = Album.builder()
                 .title(albumAddDTO.getTitle())
                 .description(albumAddDTO.getDescription())
@@ -50,7 +51,7 @@ public class AlbumService {
             AlbumImage albumImage = AlbumImage.builder().album(album).url(url).build();
             albumImageRepository.save(albumImage);
         }
-        return ResponseEntity.ok("Album added");
+        return album;
     }
     /// 앨범 겟
     public ResponseEntity<?> getAlbumDetailById(long id) {
@@ -67,9 +68,7 @@ public class AlbumService {
     /// 앨범리스트 겟
     public PageResponseDTO getAlbumList(Pageable pageable) {
         List<AlbumResponseDTO> list = new ArrayList<>();
-
         Page<Album> albumpage = albumRepository.findAllByOrderByIdDesc(pageable);
-
         for (Album album : albumpage.getContent()) {
             list.add(new AlbumResponseDTO(album));
         }

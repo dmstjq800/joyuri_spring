@@ -2,9 +2,8 @@ package project.demo.concert.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,8 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Concert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +24,8 @@ public class Concert {
     @JsonFormat(pattern = "yyyy.MM.dd")
     private LocalDate concertDate;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private List<ConcertImage> concertImages = new ArrayList<>();
+//    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+//    private List<ConcertImage> concertImages = new ArrayList<>();
 
     public Concert(String ConcertName, String place, LocalDate concertDate) {
         this.ConcertName = ConcertName;

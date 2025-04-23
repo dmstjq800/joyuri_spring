@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.demo.album.dto.AlbumAddDTO;
+import project.demo.album.entity.Album;
 import project.demo.album.service.AlbumService;
 
 import java.io.IOException;
@@ -20,9 +21,10 @@ public class AlbumController {
 
     /// 인가된 사용자만 가능
     @PostMapping("/add")
-    public ResponseEntity<?> addAlbum(AlbumAddDTO albumAddDTO, @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        if (albumAddDTO.getTitle().isEmpty()) {return ResponseEntity.badRequest().body("Title is required");}
-        return albumService.addAlbum(albumAddDTO, image);
+    public ResponseEntity<?> addAlbum(AlbumAddDTO albumAddDTO,
+                                      @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+        Album album = albumService.addAlbum(albumAddDTO, image);
+        return ResponseEntity.ok("success : "+album.getId());
     }
     /// 앨범 리스트
     ///
@@ -42,7 +44,8 @@ public class AlbumController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAlbum(@PathVariable long id) {
-        return albumService.deleteAlbum(id);
+        Album album = albumService.deleteAlbum(id);
+        return ResponseEntity.ok("success : "+album.getId());
     }
 
 }
