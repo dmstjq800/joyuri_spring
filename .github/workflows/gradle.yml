@@ -66,7 +66,7 @@ jobs:
     #        --region ap-northeast-2
     - name: write application.properties
       run: |
-        cat << EOF >> application.properties
+        cat << EOF >> application.properties_git
         aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }}
         aws.credentials.secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
         EOF
