@@ -73,13 +73,13 @@ jobs:
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1  
 
-    # - name: Build and Push Docker image
-    #   env:
-    #     IMAGE_TAG: ${{ github.sha }}
-    #   run: |
-    #    docker build -t joyuri-backend:$IMAGE_TAG .
-    #    docker tag joyuri-backend:$IMAGE_TAG 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
-    #    docker push 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
+    - name: Build and Push Docker image
+      env:
+        IMAGE_TAG: ${{ github.sha }}
+      # run: |
+      #  docker build -t joyuri-backend:$IMAGE_TAG .
+      #  docker tag joyuri-backend:$IMAGE_TAG 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
+      #  docker push 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
 
     - name: Checkout K8s manifest repository
       uses: actions/checkout@v4
