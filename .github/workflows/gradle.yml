@@ -110,9 +110,9 @@ jobs:
         fi
         sed -i "s|^\(\s*image:\s*\)\".*\"|\1\"${NEW_IMAGE_URI}\"|g" "$TARGET_FILE"
         if grep -q "$NEW_IMAGE_URI" "$TARGET_FILE"; then
-          echo " $TARGET_FILE 파일에 새 이미지 주소 쓰기 성공"
+          echo "성공"
         else
-
+          echo "실패."
           exit 1
         fi
 
