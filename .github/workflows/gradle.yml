@@ -102,7 +102,7 @@ jobs:
         TARGET_FILE="joyuri_k8s/backend.yaml"
         NEW_IMAGE_URI="${{ env.FULL_IMAGE_URI }}" 
 
-        echo " değiştireceğimiz dosya $TARGET_FILE, yeni resim: $NEW_IMAGE_URI" # 터키어가 살짝...?! 헤헤, "바꿀 파일: $TARGET_FILE, 새 이미지: $NEW_IMAGE_URI" 😅
+        echo " değiştireceğimiz dosya $TARGET_FILE, yeni resim: $NEW_IMAGE_URI" # 터키어가 살짝...?! 헤헤, "바꿀 파일: $TARGET_FILE, 새 이미지: $NEW_IMAGE_URI" 
 
         if [ ! -f "$TARGET_FILE" ]; then
           echo "$TARGET_FILE 파일이 없어요! 확인해주세요!"
@@ -110,38 +110,34 @@ jobs:
         fi
         sed -i "s|image: \"\"|image: \"${NEW_IMAGE_URI}\"|g" "$TARGET_FILE"
         if grep -q "$NEW_IMAGE_URI" "$TARGET_FILE"; then
-          echo " $TARGET_FILE 파일에 새 이미지 주소 쓰기 성공!"
+          echo " $TARGET_FILE 파일에 새 이미지 주소 쓰기 성공"
         else
-          echo "뭔가 잘못됐나 봐요."
+
           exit 1
         fi
 
     - name: Commit and push Kubernetes manifest changes
       run: |
-        cd joyuri_k8s # joyuri_k8s 폴더로 숑~ 이동!
+        cd joyuri_k8s
         
-        # git 설정! 내가 커밋한 거 아니고 액션봇이 한 거라고 이름표 붙여주기! 🤖
+
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         
-        git add backend.yaml # 바뀐 backend.yaml 파일 스테이징!
+        git add backend.yaml 
         
-        # 혹시 바뀐 게 없으면 커밋 안 하도록 체크! 똑똑이! 😎
+
         if git diff --staged --quiet; then
-          echo "🤷 어라? backend.yaml 파일에 바뀐 내용이 없네요! 이미 최신인가 봐요!"
+          
         else
-          echo "✅ backend.yaml 파일이 바뀌었어요! 지금 바로 커밋하고 푸시할게요!슝~"
-          # 커밋 메시지에 어떤 이미지로 바꿨는지 태그도 같이 적어주면 나중에 보기 편하겠죠? 🥰
           git commit -m "Update backend image to ${{ github.sha }}" -m "Image URI: ${{ env.FULL_IMAGE_URI }}"
-          # joyuri_k8s 저장소의 기본 브랜치(master 또는 main)로 푸시할 거예요!
           git push 
-          echo "🚀 dmstjq800/joyuri_k8s 저장소로 바뀐 backend.yaml 파일 업로드 완료!"
         fi
     
     # - name: Update kubeconfig
     #   run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
 
-    # - name: Deploy to EKS (using latest tag) 🚀
+    # - name: Deploy to EKS (using latest tag) 
     #   run: |
     #     kubectl set image deployment/backend-deployment \
     #     backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG \
