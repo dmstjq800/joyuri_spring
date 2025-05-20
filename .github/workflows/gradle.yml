@@ -102,13 +102,13 @@ jobs:
         TARGET_FILE="joyuri_k8s/backend.yaml"
         NEW_IMAGE_URI="${{ env.FULL_IMAGE_URI }}" 
 
-        echo " değiştireceğimiz dosya $TARGET_FILE, yeni resim: $NEW_IMAGE_URI" # 터키어가 살짝...?! 헤헤, "바꿀 파일: $TARGET_FILE, 새 이미지: $NEW_IMAGE_URI" 
+        echo " değiştireceğimiz dosya $TARGET_FILE, yeni resim: $NEW_IMAGE_URI"  
 
         if [ ! -f "$TARGET_FILE" ]; then
           echo "$TARGET_FILE 파일이 없어요! 확인해주세요!"
           exit 1
         fi
-        sed -i "s|image: \"\"|image: \"${NEW_IMAGE_URI}\"|g" "$TARGET_FILE"
+        sed -i "s|^\(\s*image:\s*\)\".*\"|\1\"${NEW_IMAGE_URI}\"|g" "$TARGET_FILE"
         if grep -q "$NEW_IMAGE_URI" "$TARGET_FILE"; then
           echo " $TARGET_FILE 파일에 새 이미지 주소 쓰기 성공"
         else
