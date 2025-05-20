@@ -81,11 +81,47 @@ jobs:
        docker tag joyuri-backend:$IMAGE_TAG 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
        docker push 575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG
 
-    - name: Update kubeconfig
-      run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
+    - name: Checkout K8s manifest repository
+      uses: actions/checkout@v4
+      with:
+        repository: dmstjq800/joyuri_k8s
+        path: joyuri_k8s
+        token: ${{ secrets.GH_PAT }} 
 
-    - name: Deploy to EKS (using latest tag) 🚀
+    - name: Install yq 
+      run: sudo apt-get update && sudo apt-get install -y yq
+
+    - name: Update Kubernetes deployment image
+      env:
+        IMAGE_TAG: ${{ github.sha }} 
       run: |
-        kubectl set image deployment/backend-deployment \
-        backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG \
+        MANIFEST_PATH="joyuri_k8s/backend.yaml" 
+        ECR_IMAGE_URI="575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend"
+        NEW_IMAGE="${ECR_IMAGE_URI}:${IMAGE_TAG}"
+
+        echo "Updating image in ${MANIFEST_PATH} to ${NEW_IMAGE}"
+        yq -i '(.spec.template.spec.containers[] | select(.name == "backend-container")).image = strenv(NEW_IMAGE)' "${MANIFEST_PATH}"
+        
+        echo "Updated manifest content:"
+        cat "${MANIFEST_PATH}"
+        
+    - name: Commit and push changes to K8s manifest repository
+      run: |
+        cd joyuri_k8s
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions-bot@github.com"
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "Update backend image to version ${{ env.IMAGE_TAG }}"
+          git push origin master
+        else
+          echo "No changes to commit."
+        fi
+    # - name: Update kubeconfig
+    #   run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
+
+    # - name: Deploy to EKS (using latest tag) 🚀
+    #   run: |
+    #     kubectl set image deployment/backend-deployment \
+    #     backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG \
         
