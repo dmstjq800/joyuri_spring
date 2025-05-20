@@ -128,7 +128,7 @@ jobs:
         
 
         if git diff --staged --quiet; then
-          
+          echo "바뀐 내용이 없네요"
         else
           git commit -m "Update backend image to ${{ github.sha }}" -m "Image URI: ${{ env.FULL_IMAGE_URI }}"
           git push 
