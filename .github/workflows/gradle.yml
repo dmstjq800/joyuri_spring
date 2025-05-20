@@ -100,7 +100,7 @@ jobs:
         NEW_IMAGE="${ECR_IMAGE_URI}:${IMAGE_TAG}"
 
         echo "Updating image in ${MANIFEST_PATH} to ${NEW_IMAGE}"
-        yq -i '(.spec.template.spec.containers[] | select(.name == "backend-container")).image = strenv(NEW_IMAGE)' "${MANIFEST_PATH}"
+        yq -i -y '(.spec.template.spec.containers[] | select(.name == "backend-container")).image = strenv(NEW_IMAGE)' "${MANIFEST_PATH}"
         
         echo "Updated manifest content:"
         cat "${MANIFEST_PATH}"
