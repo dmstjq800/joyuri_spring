@@ -70,6 +70,7 @@ jobs:
         aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }}
         aws.credentials.secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
         EOF
+        
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1  
 
