@@ -105,7 +105,7 @@ jobs:
         echo " değiştireceğimiz dosya $TARGET_FILE, yeni resim: $NEW_IMAGE_URI"  
 
         if [ ! -f "$TARGET_FILE" ]; then
-          echo "$TARGET_FILE 파일이 없어요! 확인해주세요!"
+          echo "$TARGET_FILE 파일이 없음"
           exit 1
         fi
         sed -i "s|^\(\s*image:\s*\)\".*\"|\1\"${NEW_IMAGE_URI}\"|g" "$TARGET_FILE"
@@ -119,16 +119,11 @@ jobs:
     - name: Commit and push Kubernetes manifest changes
       run: |
         cd joyuri_k8s
-        
-
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        
+        git config user.name "github-actions"
+        git config user.email "github-actions@users.noreply.github.com"      
         git add backend.yaml 
-        
-
         if git diff --staged --quiet; then
-          echo "바뀐 내용이 없네요"
+          echo "바뀐 내용이 없음"
         else
           git commit -m "Update backend image to ${{ github.sha }}" -m "Image URI: ${{ env.FULL_IMAGE_URI }}"
           git push 
@@ -137,7 +132,7 @@ jobs:
     # - name: Update kubeconfig
     #   run: aws eks update-kubeconfig --region ap-northeast-2 --name my-eks-cluster
 
-    # - name: Deploy to EKS (using latest tag) 
+    # - name: Deploy to EKS
     #   run: |
     #     kubectl set image deployment/backend-deployment \
     #     backend-container=575108943098.dkr.ecr.ap-northeast-2.amazonaws.com/joyuri_backend:$IMAGE_TAG \
